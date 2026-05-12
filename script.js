@@ -135,6 +135,7 @@ const attackEffectImageByFx = {
 };
 
 const maxPlayerHp = 100;
+const minChargeMs = 220;
 
 const musicTracks = {
   home: "assets/bgm/flowerbed_fields.ogg",
@@ -258,14 +259,14 @@ function centerPoint(element, referenceRect, xRatio = 0.5, yRatio = 0.5) {
   };
 }
 
-function launchAttackEffect({ from, to, type, strong = false, image, onImpact }) {
+function launchAttackEffect({ from, to, type, strong = false, charged = false, image, onImpact }) {
   const layer = ensureEffectLayer();
   const layerRect = layer.getBoundingClientRect();
   const start = centerPoint(from, layerRect, 0.5, 0.45);
   const end = centerPoint(to, layerRect, 0.5, 0.48);
   const effect = document.createElement("span");
 
-  effect.className = `attack-effect ${type}${image ? " has-art" : ""}${strong ? " strong" : ""}`;
+  effect.className = `attack-effect ${type}${image ? " has-art" : ""}${strong ? " strong" : ""}${charged ? " charged" : ""}`;
   effect.style.setProperty("--from-x", `${start.x}px`);
   effect.style.setProperty("--from-y", `${start.y}px`);
   effect.style.setProperty("--dx", `${end.x - start.x}px`);
@@ -569,6 +570,7 @@ function attack(multiplier = 1) {
   const ease = stageEaseProfile();
   const base = 16 + state.stage * 2;
   const powerBonus = Math.round(state.power * 0.28);
+  const isCharged = multiplier > 1.01;
   const damage = Math.round((base + powerBonus) * multiplier * ease.playerDamageBoost);
 
   state.bossHp = clamp(state.bossHp - damage, 0, currentBoss().hp);
@@ -580,6 +582,11 @@ function attack(multiplier = 1) {
     from: els.player,
     to: els.boss,
     type: multiplier > 1.7 ? "player-wave" : "player-slash",
+    image:
+      isCharged
+        ? "assets/pictures/weapon/advance_sword.png"
+        : "assets/pictures/weapon/wooden_sword.png",
+    charged: isCharged,
     strong: multiplier > 2.2,
     onImpact: () => flashHit(els.boss, els.bossHit, `-${damage}`, multiplier > 2.2)
   });
@@ -611,11 +618,12 @@ function releaseCharge() {
   if (!state.chargeStart) return;
 
   const held = Date.now() - state.chargeStart;
+  const isCharged = held >= minChargeMs;
   state.chargeStart = 0;
   window.clearInterval(state.chargeTimer);
   state.chargeTimer = null;
   els.chargeMeter.textContent = "長按蓄力";
-  attack(clamp(1 + held / 1300, 1, 2.8));
+  attack(isCharged ? clamp(1 + held / 1300, 1, 2.8) : 1);
 }
 
 function defend() {
@@ -652,6 +660,9 @@ function flashHit(target, label, text, strong = false) {
   label.classList.remove("show");
   void target.offsetWidth;
   target.classList.add("shake");
+  window.setTimeout(() => {
+    target.classList.remove("shake");
+  }, 280);
   triggerScreenShake(strong);
   label.textContent = text;
   label.classList.add("show");
@@ -767,6 +778,7 @@ function showModal({ type, title, message, actions }) {
   els.modalTitle.textContent = title;
   els.modalMessage.textContent = message;
   els.modal.classList.remove("hidden");
+  els.modal.classList.toggle("game-over-fullscreen", type === "over");
   els.modalVisual.className = `modal-visual ${type}`;
   els.reward.classList.toggle("hidden", type !== "final");
   els.modalActions.innerHTML = "";
@@ -782,6 +794,7 @@ function showModal({ type, title, message, actions }) {
 
 function hideModal() {
   els.modal.classList.add("hidden");
+  els.modal.classList.remove("game-over-fullscreen");
 }
 
 els.startBtn.addEventListener("click", startGame);

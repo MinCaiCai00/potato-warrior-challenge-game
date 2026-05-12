@@ -720,6 +720,38 @@ h1 {
   padding: 12px;
 }
 
+.modal.game-over-fullscreen {
+  padding: 0;
+  background:
+    linear-gradient(rgba(8, 12, 28, 0.8), rgba(8, 12, 28, 0.86)),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 9px),
+    linear-gradient(180deg, #1f336e 0%, #355fa9 54%, #4f9d49 54%, #3a7c35 100%);
+}
+
+.modal.game-over-fullscreen .modal-card {
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  display: grid;
+  place-content: center;
+  gap: 14px;
+  text-align: center;
+  padding: clamp(18px, 5vw, 42px);
+}
+
+.modal.game-over-fullscreen .modal-visual {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 14px;
+}
+
+.modal.game-over-fullscreen .modal-actions {
+  margin-top: 18px;
+}
+
 .modal-card {
   width: min(540px, 100%);
   border: 4px solid #101010;
@@ -826,12 +858,20 @@ h1 {
   transform: scale(1.12);
 }
 
-.attack-effect.player-wave span {
+.attack-effect.has-art.charged span {
+  transform: scale(1.24);
+  filter:
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 7px rgba(255, 236, 125, 0.95))
+    drop-shadow(0 0 16px rgba(112, 220, 255, 0.82));
+}
+
+.attack-effect.player-wave:not(.has-art) span {
   border-radius: 999px;
   background: linear-gradient(90deg, #fff 0 20%, #8bf6ff 21% 62%, #ffd648 63% 100%);
 }
 
-.attack-effect.player-slash span {
+.attack-effect.player-slash:not(.has-art) span {
   inset: 10px 5px;
   border: 0;
   border-top: 8px solid #fff;
@@ -902,10 +942,10 @@ body.paused .battle-screen .boss {
 }
 
 @keyframes idleSway {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  25% { transform: translateY(-3px) rotate(-0.6deg); }
-  50% { transform: translateY(-6px) rotate(0.8deg); }
-  75% { transform: translateY(-2px) rotate(-0.4deg); }
+  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+  25% { transform: translateX(-2px) translateY(-3px) rotate(-0.6deg); }
+  50% { transform: translateX(2px) translateY(-6px) rotate(0.8deg); }
+  75% { transform: translateX(-1px) translateY(-2px) rotate(-0.4deg); }
 }
 
 @keyframes screenShake {
