@@ -1,0 +1,149 @@
+﻿<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>土豆勇者挑戰</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="game-shell">
+      <section id="home-screen" class="home-screen">
+        <div id="loading-panel" class="loading-panel" aria-live="polite">
+          <div class="runner-track" aria-hidden="true">
+            <div id="home-runner" class="home-runner pixel-sprite"></div>
+          </div>
+          <div class="loading-bar" aria-label="載入進度">
+            <span id="loading-progress"></span>
+          </div>
+          <p id="loading-text" class="loading-text">遊戲載入中 0%</p>
+        </div>
+
+        <div id="home-content" class="home-content home-ready hidden">
+          <p class="kicker">16-BIT BOSS RUSH</p>
+          <img class="game-banner" src="assets/pictures/game_banner.png" alt="遊戲首頁橫幅" />
+          <h1>土豆勇者挑戰</h1>
+          <p class="intro">土豆勇者出發，連戰八大心魔 Boss。蓄力攻擊、精準防禦，撐到最後一關。</p>
+          <button id="start-btn" class="primary-btn">開始冒險</button>
+        </div>
+      </section>
+
+      <section id="battle-screen" class="battle-screen hidden" aria-live="polite">
+        <div class="top-actions">
+          <button id="music-btn" class="icon-btn" title="音樂" aria-label="音樂">♫</button>
+          <button id="pause-btn" class="icon-btn" title="暫停" aria-label="暫停">II</button>
+          <button id="home-btn" class="icon-btn" title="首頁" aria-label="首頁">⌂</button>
+        </div>
+
+        <header class="stage-header">
+          <div>
+            <p id="stage-label" class="stage-label">第 1 關</p>
+            <h2 id="boss-title">Boss</h2>
+          </div>
+          <div id="badge-row" class="badge-row" aria-label="關卡徽章"></div>
+        </header>
+
+        <div class="arena">
+          <article class="fighter player-card">
+            <div class="stat-block">
+              <div class="stat-line">
+                <span>土豆勇者生命值</span>
+                <strong id="player-hp-text">100 / 100</strong>
+              </div>
+              <div class="bar hp-bar"><span id="player-hp-bar"></span></div>
+              <div class="stat-line">
+                <span>能量</span>
+                <strong id="power-text">0%</strong>
+              </div>
+              <div class="bar power-bar"><span id="power-bar"></span></div>
+            </div>
+
+            <div class="character-wrap">
+              <div id="player" class="player sprite" aria-label="玩家角色"></div>
+              <div id="player-hit" class="hit-text"></div>
+            </div>
+
+            <div class="control-row">
+              <button id="attack-btn" class="action-btn attack-btn">攻擊</button>
+              <button id="defend-btn" class="action-btn defend-btn">防禦</button>
+            </div>
+          </article>
+
+          <div class="versus">
+            <span id="charge-meter" class="charge-meter">長按蓄力</span>
+          </div>
+
+          <article class="fighter boss-card">
+            <div class="stat-block">
+              <div class="stat-line">
+                <span id="boss-name">Boss</span>
+                <strong id="boss-hp-text">120 / 120</strong>
+              </div>
+              <div class="bar hp-bar boss-hp"><span id="boss-hp-bar"></span></div>
+            </div>
+
+            <div class="character-wrap">
+              <div id="boss" class="boss sprite" aria-label="Boss 角色"></div>
+              <div id="boss-hit" class="hit-text"></div>
+            </div>
+
+            <p id="boss-desc" class="boss-desc">Boss 描述</p>
+          </article>
+        </div>
+        <div id="battle-line-bubble" class="battle-line-bubble" aria-live="polite"></div>
+
+        <div class="ground" aria-hidden="true"></div>
+      </section>
+
+      <section id="stage-clear-screen" class="stage-clear-screen hidden" aria-live="polite">
+        <div class="stage-clear-card">
+          <p class="kicker">STAGE CLEAR</p>
+          <h2 id="stage-clear-title">第 1 關勝利</h2>
+          <p id="stage-clear-message" class="intro">你成功擊敗 Boss，準備前往下一關。</p>
+          <button id="next-stage-btn" class="primary-btn">下一關</button>
+        </div>
+      </section>
+
+      <section id="victory-screen" class="victory-screen hidden" aria-live="polite">
+        <div class="victory-scene">
+          <p class="kicker">STAGE CLEAR</p>
+          <h2>全關卡突破</h2>
+          <p class="intro">你已經打倒全部 Boss，土豆勇者達成完美通關。</p>
+
+          <div class="rescue-stage" aria-label="勝利舞台">
+            <div class="victory-player player sprite"></div>
+            <div class="victory-princess sprite" aria-label="公主角色"></div>
+            <div class="victory-congrats">恭喜勝利！</div>
+            <div class="victory-heart" aria-hidden="true">♥</div>
+          </div>
+
+          <div class="reward-board">
+            <strong>你獲得了勇者勳章</strong>
+            <div class="victory-stars" aria-hidden="true">★★★★★★★★</div>
+          </div>
+
+          <div class="victory-actions">
+            <button id="victory-restart-btn" class="primary-btn">重新挑戰</button>
+            <button id="victory-home-btn" class="primary-btn">返回首頁</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-card">
+        <div id="modal-visual" class="modal-visual"></div>
+        <h2 id="modal-title">提示</h2>
+        <p id="modal-message">訊息內容</p>
+        <div id="reward" class="reward hidden">
+          <div class="princess" aria-label="公主角色"></div>
+          <p>你獲得了勇者勳章</p>
+        </div>
+        <div id="modal-actions" class="modal-actions"></div>
+      </div>
+    </div>
+
+    <audio id="bgm" src="assets/bgm/flowerbed_fields.ogg" preload="auto" loop></audio>
+    <script src="script.js"></script>
+  </body>
+</html>
