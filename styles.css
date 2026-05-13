@@ -70,7 +70,7 @@ button {
 }
 
 .home-screen {
-  background-image: url("assets/pictures/background/home_bg.png");
+  background-image: url("assets/pictures/background/home_bg.jpg");
   background-size: cover;
   background-color: #060f2a;
   background-attachment: scroll;
@@ -197,7 +197,6 @@ strong,
 .primary-btn,
 .icon-btn,
 .boss-desc,
-.charge-meter,
 .modal-card,
 .victory-stars {
   color: #f8f1d4;
@@ -352,9 +351,9 @@ h1 {
   width: min(1150px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(72px, 8vw, 100px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) clamp(94px, 10vw, 122px) minmax(0, 1fr);
   gap: clamp(8px, 2vw, 18px);
-  align-items: end;
+  align-items: stretch;
   flex: 1;
   min-height: 420px;
   height: min(calc(100svh - 188px), 680px);
@@ -367,13 +366,18 @@ h1 {
   padding: 4px;
   min-width: 0;
   min-height: 0;
+  height: 100%;
   display: grid;
-  grid-template-rows: auto minmax(160px, 1fr) auto;
   gap: 10px;
+}
+
+.player-card {
+  grid-template-rows: auto minmax(160px, 1fr) auto;
 }
 
 .boss-card {
   background: transparent;
+  grid-template-rows: auto auto minmax(160px, 1fr) auto;
 }
 
 .stat-block,
@@ -433,6 +437,7 @@ h1 {
   display: flex;
   align-items: flex-end;
   justify-content: center;
+  align-self: end;
   min-height: clamp(160px, 28svh, 320px);
   padding: 0 8px 12px;
   overflow: visible;
@@ -496,11 +501,14 @@ h1 {
   display: none;
 }
 
-.boss.kind-sludge,
 .boss.kind-dragon,
 .boss.kind-lightning,
 .boss.kind-mirror {
   width: min(100%, clamp(168px, 22vw, 290px));
+}
+
+.boss.kind-sludge {
+  width: min(100%, clamp(180px, 25vw, 330px));
 }
 
 .hit-text {
@@ -544,38 +552,40 @@ h1 {
 }
 
 .battle-line-bubble {
-  position: absolute;
-  top: clamp(90px, 13vh, 150px);
-  right: clamp(12px, 4vw, 58px);
-  z-index: 11;
-  max-width: min(340px, 76vw);
+  display: block;
+  visibility: hidden;
+  align-self: start;
+  width: min(100%, 520px);
+  min-height: 78px;
   border: 3px solid #101010;
   border-radius: 14px;
   background: rgba(16, 24, 46, 0.92);
   color: #fff5cc;
   text-shadow: 1px 1px 0 #000;
-  padding: 10px 12px;
-  line-height: 1.55;
-  font-size: clamp(0.58rem, 1.4vw, 0.72rem);
+  margin: 2px auto 4px;
+  padding: 14px 16px;
+  line-height: 1.65;
+  font-size: clamp(0.68rem, 1.6vw, 0.92rem);
   pointer-events: none;
-  opacity: 0;
-  transform: translateY(10px) scale(0.96);
+  opacity: 1;
+  transform: none;
 }
 
 .battle-line-bubble::after {
   content: "";
   position: absolute;
-  right: 24px;
+  left: 50%;
   bottom: -12px;
   width: 14px;
   height: 14px;
   border-right: 3px solid #101010;
   border-bottom: 3px solid #101010;
   background: rgba(16, 24, 46, 0.92);
-  transform: rotate(45deg);
+  transform: translateX(-50%) rotate(45deg);
 }
 
 .battle-line-bubble.show {
+  visibility: visible;
   animation: battleLineRise 3000ms ease-in-out forwards;
 }
 
@@ -587,17 +597,55 @@ h1 {
 }
 
 .charge-meter {
-  width: 92px;
+  --charge-percent: 0%;
+  width: 106px;
   aspect-ratio: 1;
+  border-radius: 50%;
   border: 3px solid #101010;
-  background: radial-gradient(circle, #fff9e6 0 45%, #ffc84a 46% 100%);
+  background: conic-gradient(#59d8ff var(--charge-percent), rgba(28, 40, 60, 0.36) var(--charge-percent));
   color: #3a2600;
   text-shadow: none;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
   display: grid;
   place-items: center;
-  padding: 8px;
-  font-size: 0.6rem;
+  padding: 7px;
+}
+
+.charge-center {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(16, 16, 16, 0.55);
+  background: #fff9e6;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 2px;
   text-align: center;
+  padding: 8px 6px;
+  pointer-events: none;
+}
+
+.charge-percent {
+  color: #28415f;
+  text-shadow: none;
+  font-family: "VT323", "Courier New", monospace;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: clamp(0.62rem, 1.8vw, 0.82rem);
+  line-height: 1;
+}
+
+.charge-label {
+  color: #3a2600;
+  text-shadow: none;
+  font-family: "VT323", "Courier New", monospace;
+  font-weight: 700;
+  letter-spacing: 0;
+  font-size: clamp(0.4rem, 1.2vw, 0.54rem);
+  line-height: 1.2;
 }
 
 .ground {
@@ -617,7 +665,7 @@ h1 {
   display: grid;
   place-items: center;
   padding: clamp(16px, 4vw, 40px);
-  background-image: url("assets/pictures/background/part_victory.png");
+  background-image: url("assets/pictures/background/part_victory.jpg");
   background-color: #0c1328;
   background-repeat: no-repeat;
   background-position: center center;
@@ -641,7 +689,7 @@ h1 {
 }
 
 .victory-screen {
-  background-image: url("assets/pictures/background/perfect_victory_bg.png");
+  background-image: url("assets/pictures/background/perfect_victory_bg.jpg");
 }
 
 .victory-scene {
@@ -1072,7 +1120,7 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 60px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr);
     gap: 6px;
     min-height: 340px;
     height: min(calc(100svh - 192px), 560px);
@@ -1081,8 +1129,15 @@ body.paused .battle-screen .boss {
   .fighter {
     padding: 2px;
     min-height: 0;
-    grid-template-rows: auto minmax(132px, 1fr) auto;
     gap: 8px;
+  }
+
+  .player-card {
+    grid-template-rows: auto minmax(132px, 1fr) auto;
+  }
+
+  .boss-card {
+    grid-template-rows: auto auto minmax(132px, 1fr) auto;
   }
 
   .sprite {
@@ -1101,9 +1156,10 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    top: 118px;
-    right: 12px;
-    max-width: min(270px, 72vw);
+    width: min(100%, 380px);
+    min-height: 64px;
+    padding: 11px 12px;
+    font-size: clamp(0.58rem, 1.9vw, 0.72rem);
   }
 
   .versus {
@@ -1164,7 +1220,7 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr);
     gap: 4px;
     min-height: 320px;
     height: min(calc(100svh - 176px), 500px);
@@ -1202,17 +1258,23 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    top: 104px;
-    right: 8px;
-    max-width: min(210px, 74vw);
-    font-size: 0.54rem;
+    width: min(100%, 300px);
+    min-height: 54px;
+    font-size: 0.5rem;
     padding: 8px 9px;
   }
 
   .charge-meter {
-    width: 48px;
+    width: 72px;
     padding: 4px;
-    font-size: 0.38rem;
+  }
+
+  .charge-percent {
+    font-size: 0.5rem;
+  }
+
+  .charge-label {
+    font-size: 0.32rem;
   }
 
   .character-wrap {

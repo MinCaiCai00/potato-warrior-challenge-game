@@ -66,7 +66,12 @@
           </article>
 
           <div class="versus">
-            <span id="charge-meter" class="charge-meter">長按蓄力</span>
+            <button id="charge-meter" class="charge-meter" type="button" aria-label="長按蓄力">
+              <span class="charge-center">
+                <strong id="charge-percent-text" class="charge-percent">0%</strong>
+                <small id="charge-label" class="charge-label">長按蓄力</small>
+              </span>
+            </button>
           </div>
 
           <article class="fighter boss-card">
@@ -78,6 +83,8 @@
               <div class="bar hp-bar boss-hp"><span id="boss-hp-bar"></span></div>
             </div>
 
+            <div id="battle-line-bubble" class="battle-line-bubble" aria-live="polite"></div>
+
             <div class="character-wrap">
               <div id="boss" class="boss sprite" aria-label="Boss 角色"></div>
               <div id="boss-hit" class="hit-text"></div>
@@ -86,7 +93,6 @@
             <p id="boss-desc" class="boss-desc">Boss 描述</p>
           </article>
         </div>
-        <div id="battle-line-bubble" class="battle-line-bubble" aria-live="polite"></div>
 
         <div class="ground" aria-hidden="true"></div>
       </section>

@@ -146,7 +146,8 @@ const stageBackgrounds = [
 ];
 
 const maxPlayerHp = 100;
-const minChargeMs = 220;
+const fullChargeMs = 1400;
+const chargeTickMs = 50;
 
 const musicTracks = {
   home: "assets/bgm/flowerbed_fields.ogg",
@@ -222,6 +223,8 @@ const els = {
   bossHit: document.querySelector("#boss-hit"),
   battleLineBubble: document.querySelector("#battle-line-bubble"),
   chargeMeter: document.querySelector("#charge-meter"),
+  chargePercentText: document.querySelector("#charge-percent-text"),
+  chargeLabel: document.querySelector("#charge-label"),
   modal: document.querySelector("#modal"),
   modalTitle: document.querySelector("#modal-title"),
   modalMessage: document.querySelector("#modal-message"),
@@ -467,6 +470,23 @@ function playSfx(src, volume = 0.8) {
   });
 }
 
+function setChargeMeter(percent = 0, label = "長按蓄力") {
+  const normalized = clamp(Math.round(percent), 0, 100);
+  els.chargeMeter?.style.setProperty("--charge-percent", `${normalized}%`);
+
+  if (els.chargePercentText) {
+    els.chargePercentText.textContent = `${normalized}%`;
+  }
+
+  if (els.chargeLabel) {
+    els.chargeLabel.textContent = label;
+  }
+}
+
+function resetChargeMeter(label = "長按蓄力") {
+  setChargeMeter(0, label);
+}
+
 function createBadges() {
   els.badgeRow.innerHTML = "";
 
@@ -515,10 +535,10 @@ function loadStage() {
   els.bossTitle.textContent = boss.name;
   els.bossName.textContent = boss.name;
   els.bossDesc.textContent = `難度 ${boss.difficulty}｜招式 ${boss.moveName}：${boss.coreThreat}`;
-  els.chargeMeter.textContent = "長按蓄力";
 
   createBadges();
   updateBars();
+  resetChargeMeter();
   startTimers();
   startBattleLineLoop();
 }
@@ -644,26 +664,27 @@ function beginCharge() {
   if (state.paused || state.locked) return;
 
   state.chargeStart = Date.now();
-  els.chargeMeter.textContent = "蓄力中";
+  setChargeMeter(0, "蓄力中");
   window.clearInterval(state.chargeTimer);
 
   state.chargeTimer = window.setInterval(() => {
     const held = Date.now() - state.chargeStart;
-    const level = clamp(Math.floor(held / 350), 1, 5);
-    els.chargeMeter.textContent = `蓄力 x${level}`;
-  }, 120);
+    const percent = clamp((held / fullChargeMs) * 100, 0, 100);
+    setChargeMeter(percent, percent >= 100 ? "蓄力完成" : "蓄力中");
+  }, chargeTickMs);
 }
 
 function releaseCharge() {
   if (!state.chargeStart) return;
 
   const held = Date.now() - state.chargeStart;
-  const isCharged = held >= minChargeMs;
+  const chargePercent = clamp((held / fullChargeMs) * 100, 0, 100);
+  const isCharged = chargePercent >= 100;
   state.chargeStart = 0;
   window.clearInterval(state.chargeTimer);
   state.chargeTimer = null;
-  els.chargeMeter.textContent = "長按蓄力";
-  attack(isCharged ? clamp(1 + held / 1300, 1, 2.8) : 1);
+  resetChargeMeter();
+  attack(isCharged ? 2.8 : 1);
 }
 
 function defend() {
@@ -671,14 +692,17 @@ function defend() {
 
   state.defending = true;
   els.player.classList.add("guard");
-  els.chargeMeter.textContent = "防禦中";
+  state.chargeStart = 0;
+  window.clearInterval(state.chargeTimer);
+  state.chargeTimer = null;
+  setChargeMeter(0, "防禦中");
 
   window.setTimeout(() => {
     if (!state.defending) return;
 
     state.defending = false;
     els.player.classList.remove("guard");
-    els.chargeMeter.textContent = "長按蓄力";
+    resetChargeMeter();
   }, 1500);
 }
 
@@ -773,7 +797,6 @@ function gameOver() {
 
   showModal({
     type: "over",
-    title: "Game Over",
     message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
     actions: [
       { label: "重新挑戰", handler: startGame },
@@ -849,13 +872,20 @@ els.nextStageBtn.addEventListener("click", nextStage);
 els.victoryRestartBtn.addEventListener("click", startGame);
 els.victoryHomeBtn.addEventListener("click", goHome);
 
-els.attackBtn.addEventListener("pointerdown", (event) => {
-  event.preventDefault();
-  beginCharge();
-});
-els.attackBtn.addEventListener("pointerup", releaseCharge);
-els.attackBtn.addEventListener("pointerleave", releaseCharge);
-els.attackBtn.addEventListener("pointercancel", releaseCharge);
+function bindChargeControl(target) {
+  if (!target) return;
+
+  target.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    beginCharge();
+  });
+  target.addEventListener("pointerup", releaseCharge);
+  target.addEventListener("pointerleave", releaseCharge);
+  target.addEventListener("pointercancel", releaseCharge);
+}
+
+bindChargeControl(els.attackBtn);
+bindChargeControl(els.chargeMeter);
 
 window.addEventListener("keydown", (event) => {
   if (state.musicEnabled && state.homeReady && els.bgm?.paused) {
@@ -880,6 +910,7 @@ window.addEventListener("pointerdown", () => {
 
 startHomeIntro();
 updateMusicButton();
+resetChargeMeter();
 
 document.addEventListener("click", (event) => {
   const button = event.target instanceof Element ? event.target.closest("button") : null;
