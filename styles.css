@@ -157,10 +157,11 @@ button {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: auto 100%;
+  transition: left 96ms linear;
 }
 
 .home-runner.running {
-  animation: runAcross 4800ms linear forwards;
+  animation: none;
 }
 
 .loading-bar {
@@ -278,13 +279,20 @@ h1 {
 }
 
 #start-btn.image-btn {
-  width: min(420px, 92vw);
+  width: min(310px, 74vw);
 }
 
 #next-stage-btn.image-btn,
 .victory-actions .image-btn,
 .modal-actions .image-btn {
   width: min(320px, 82vw);
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.stage-clear-card #next-stage-btn.image-btn {
+  background-image: url("assets/pictures/buttons/next_level.png");
 }
 
 .image-btn[data-btn-action="start"] {
@@ -310,6 +318,8 @@ h1 {
 .battle-screen {
   position: relative;
   overflow: hidden;
+  height: 100svh;
+  max-height: 100svh;
   display: flex;
   flex-direction: column;
   gap: clamp(10px, 2vw, 18px);
@@ -319,7 +329,7 @@ h1 {
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.05) 0 3px, transparent 3px 9px),
     linear-gradient(rgba(8, 14, 33, 0.38), rgba(8, 14, 33, 0.38)),
     var(--stage-bg-image);
-  background-position: center center, center center, center center;
+  background-position: center center, center center, center var(--stage-bg-y, 50%);
   background-repeat: repeat, no-repeat, no-repeat;
   background-size: auto, 100% 100%, contain;
 }
@@ -490,8 +500,9 @@ h1 {
   justify-content: center;
   align-self: end;
   min-height: clamp(160px, 28svh, 320px);
+  height: 100%;
   padding: 0 8px 12px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .character-wrap::after {
@@ -508,9 +519,11 @@ h1 {
 
 .sprite {
   position: relative;
-  width: min(100%, clamp(148px, 18vw, 250px));
+  width: auto;
+  max-width: min(100%, clamp(166px, 20vw, 280px));
   aspect-ratio: 5 / 6;
-  height: auto;
+  height: 100%;
+  max-height: 100%;
   image-rendering: pixelated;
   filter: drop-shadow(0 10px 0 rgba(0, 0, 0, 0.33));
   z-index: 1;
@@ -720,10 +733,10 @@ h1 {
   background-color: #0c1328;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: cover;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 420ms ease;
+  transition: none;
 }
 
 .stage-clear-screen.show-screen {
@@ -882,10 +895,11 @@ h1 {
 
 .modal.game-over-fullscreen {
   background-image: url("assets/pictures/background/game_over_bg.jpg");
-  background-color: transparent;
+  background-color: #05070f;
   background-repeat: no-repeat;
   background-position: center center;
-  background-size: contain;
+  background-size: cover;
+  transition: none;
 }
 
 .modal.game-over-fullscreen .modal-card {
@@ -1203,7 +1217,7 @@ body.paused .battle-screen .boss {
   }
 
   .sprite {
-    width: min(100%, clamp(96px, 24vw, 170px));
+    max-width: min(100%, clamp(108px, 26vw, 190px));
   }
 
   .stat-line,
@@ -1293,7 +1307,7 @@ body.paused .battle-screen .boss {
   }
 
   .sprite {
-    width: min(100%, clamp(82px, 26vw, 132px));
+    max-width: min(100%, clamp(92px, 28vw, 158px));
   }
 
   .stat-line,

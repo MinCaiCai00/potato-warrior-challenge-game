@@ -386,6 +386,12 @@ function setHomeLoadingState(isLoading) {
   els.homeScreen.classList.toggle("loading", isLoading);
 }
 
+function setHomeRunnerProgress(progress = 0) {
+  if (!els.homeRunner) return;
+  const ratio = clamp(progress, 0, 100) / 100;
+  els.homeRunner.style.left = `calc(var(--runner-pad) + (100% - var(--runner-size) - (var(--runner-pad) * 2)) * ${ratio})`;
+}
+
 function startHomeIntro() {
   window.clearInterval(state.homeTimer);
   state.homeProgress = 0;
@@ -394,6 +400,7 @@ function startHomeIntro() {
   els.loadingPanel.classList.remove("hidden");
   els.homeContent.classList.add("hidden");
   els.homeRunner.classList.remove("running");
+  setHomeRunnerProgress(0);
   els.loadingProgress.style.width = "0%";
   els.loadingText.textContent = "遊戲載入中 0%";
   void els.homeRunner.offsetWidth;
@@ -401,6 +408,7 @@ function startHomeIntro() {
 
   state.homeTimer = window.setInterval(() => {
     state.homeProgress = clamp(state.homeProgress + 2, 0, 100);
+    setHomeRunnerProgress(state.homeProgress);
     els.loadingProgress.style.width = `${state.homeProgress}%`;
     els.loadingText.textContent = `遊戲載入中 ${state.homeProgress}%`;
 
@@ -533,6 +541,7 @@ function loadStage() {
   state.locked = false;
   state.chargeStart = 0;
   els.battleScreen.style.setProperty("--stage-bg-image", `url("${stageBackground}")`);
+  els.battleScreen.style.setProperty("--stage-bg-y", state.stage === 0 ? "58%" : "50%");
 
   els.boss.style.setProperty("--boss-color", boss.color);
   const bossImage = bossImageByKind[boss.kind];
@@ -754,7 +763,6 @@ function showStageClearScreen(boss) {
   const stageNumber = state.stage + 1;
   els.stageClearTitle.textContent = `第 ${stageNumber} 關勝利`;
   els.stageClearMessage.textContent = boss?.cheer || "你成功擊敗 Boss，準備前往下一關。";
-  startMusic("stageClear");
   clearTransitionTimers();
   els.stageClearScreen.classList.remove("show-screen", "show-card");
   els.stageClearScreen.classList.remove("hidden");
@@ -814,6 +822,7 @@ function showVictoryScreen() {
   els.pauseBtn.textContent = "II";
   document.body.classList.remove("paused");
   setScreen("victory");
+  startMusic("victory");
   playVictoryScene();
   state.resultTransitionTimer = window.setTimeout(() => {
     if (state.screen !== "victory") return;
@@ -822,7 +831,6 @@ function showVictoryScreen() {
       title: "全關卡突破",
       message: "你已經打倒全部 Boss，土豆勇者達成完美通關。",
       popupDelayMs: finalVictoryPopupDelayMs,
-      musicTrackOnPopup: "victory",
       actions: [
         { label: "重新遊戲", handler: startGame },
         { label: "回到首頁", handler: goHome }
