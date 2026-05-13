@@ -151,7 +151,16 @@ const minChargeMs = 220;
 const musicTracks = {
   home: "assets/bgm/flowerbed_fields.ogg",
   battle: "assets/bgm/game_bgm_elevenlabs.mp3_1778581884091.mp3",
-  victory: "assets/bgm/Where_the_Map_Ends.mp3"
+  stageClear: "assets/bgm/part_win.mp3",
+  victory: "assets/bgm/Where_the_Map_Ends.mp3",
+  gameOver: "assets/bgm/dark_atmosphere.mp3"
+};
+
+const sfxTracks = {
+  button: "assets/bgm/mobile_phone_O.mp3",
+  playerAttack: "assets/bgm/attack1.mp3",
+  playerChargeAttack: "assets/bgm/slash_attack1.mp3",
+  bossAttack: "assets/bgm/laser2.mp3"
 };
 
 const state = {
@@ -448,6 +457,16 @@ function updateMusicButton() {
   els.musicBtn.setAttribute("aria-label", state.musicEnabled ? "音樂開啟" : "音樂關閉");
 }
 
+function playSfx(src, volume = 0.8) {
+  if (!src) return;
+
+  const sfx = new Audio(src);
+  sfx.volume = clamp(volume, 0, 1);
+  sfx.play().catch(() => {
+    // Ignore blocked autoplay errors.
+  });
+}
+
 function createBadges() {
   els.badgeRow.innerHTML = "";
 
@@ -562,6 +581,7 @@ function bossAttack() {
 
   damage = Math.max(1, Math.round(damage));
   state.playerHp = clamp(state.playerHp - damage, 0, maxPlayerHp);
+  playSfx(sfxTracks.bossAttack, 0.85);
 
   launchAttackEffect({
     from: els.boss,
@@ -591,6 +611,7 @@ function attack(multiplier = 1) {
   const powerBonus = Math.round(state.power * 0.28);
   const isCharged = multiplier > 1.01;
   const damage = Math.round((base + powerBonus) * multiplier * ease.playerDamageBoost);
+  playSfx(isCharged ? sfxTracks.playerChargeAttack : sfxTracks.playerAttack, isCharged ? 0.92 : 0.84);
 
   state.bossHp = clamp(state.bossHp - damage, 0, currentBoss().hp);
   state.power = 0;
@@ -712,6 +733,7 @@ function stageWin() {
     return;
   }
 
+  startMusic("stageClear");
   showStageClearScreen(boss);
 }
 
@@ -722,6 +744,7 @@ function nextStage() {
   hideStageClearScreen();
   hideModal();
   loadStage();
+  startMusic("battle");
 }
 
 function showVictoryScreen() {
@@ -746,6 +769,7 @@ function playVictoryScene() {
 function gameOver() {
   state.locked = true;
   clearTimers();
+  startMusic("gameOver");
 
   showModal({
     type: "over",
@@ -856,3 +880,9 @@ window.addEventListener("pointerdown", () => {
 
 startHomeIntro();
 updateMusicButton();
+
+document.addEventListener("click", (event) => {
+  const button = event.target instanceof Element ? event.target.closest("button") : null;
+  if (!button) return;
+  playSfx(sfxTracks.button, 0.72);
+});

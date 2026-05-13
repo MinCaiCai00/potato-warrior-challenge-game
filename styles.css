@@ -71,7 +71,7 @@ button {
 
 .home-screen {
   background-image: url("assets/pictures/background/home_bg.png");
-  background-size: contain;
+  background-size: cover;
   background-color: #060f2a;
   background-attachment: scroll;
   overflow: hidden;
@@ -617,10 +617,11 @@ h1 {
   display: grid;
   place-items: center;
   padding: clamp(16px, 4vw, 40px);
-  background:
-    linear-gradient(rgba(8, 14, 36, 0.68), rgba(8, 14, 36, 0.74)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 10px),
-    linear-gradient(180deg, #21418a 0%, #3f70bf 52%, #4d9d48 52%, #326d31 100%);
+  background-image: url("assets/pictures/background/part_victory.png");
+  background-color: #0c1328;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
 .stage-clear-card {
@@ -751,8 +752,11 @@ h1 {
 }
 
 .modal.game-over-fullscreen {
-  background-image: url("assets/pictures/background/game_over_bg.png");
+  background-image: url("assets/pictures/background/game_over_bg.jpg");
   background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
 }
 
 .modal.game-over-fullscreen .modal-card {
