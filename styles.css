@@ -658,6 +658,7 @@ h1 {
   display: grid;
   place-items: center;
   padding-bottom: clamp(72px, 10svh, 124px);
+  z-index: 2;
 }
 
 .charge-meter {
@@ -675,6 +676,8 @@ h1 {
   display: grid;
   place-items: center;
   padding: 7px;
+  position: relative;
+  z-index: 2;
 }
 
 .charge-center {
@@ -869,6 +872,17 @@ h1 {
   gap: 10px;
   flex-wrap: wrap;
   margin-top: 14px;
+}
+
+.modal.final-overlay .modal-actions,
+.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions {
+  flex-wrap: nowrap;
+  gap: 6px;
+}
+
+.modal.final-overlay .modal-actions .image-btn,
+.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
+  width: min(170px, 32vw);
 }
 
 .modal {
@@ -1196,10 +1210,10 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
     gap: 6px;
     min-height: 340px;
-    height: min(calc(100svh - 192px), 560px);
+    height: min(calc(100svh - 208px), 540px);
   }
 
   .fighter {
@@ -1209,11 +1223,11 @@ body.paused .battle-screen .boss {
   }
 
   .player-card {
-    grid-template-rows: auto minmax(132px, 1fr) auto;
+    grid-template-rows: auto minmax(112px, 1fr) auto;
   }
 
   .boss-card {
-    grid-template-rows: auto auto minmax(132px, 1fr) auto;
+    grid-template-rows: auto auto minmax(112px, 1fr) auto;
   }
 
   .sprite {
@@ -1227,7 +1241,7 @@ body.paused .battle-screen .boss {
   }
 
   .character-wrap {
-    min-height: clamp(132px, 24svh, 220px);
+    min-height: clamp(112px, 20svh, 182px);
     padding: 0 4px 10px;
   }
 
@@ -1240,19 +1254,24 @@ body.paused .battle-screen .boss {
 
   .versus {
     align-self: end;
-    padding-bottom: clamp(54px, 7svh, 84px);
+    padding-bottom: clamp(22px, 3.6svh, 34px);
   }
 
   .control-row {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 6px;
     padding: 5px;
   }
 
   .action-btn {
-    min-height: 36px;
-    padding: 7px 8px;
+    min-height: 34px;
+    padding: 6px 6px;
     font-size: 0.58rem;
+  }
+
+  .charge-meter {
+    width: 78px;
+    padding: 4px;
   }
 
   .stat-block,
@@ -1277,6 +1296,16 @@ body.paused .battle-screen .boss {
   .victory-princess {
     width: min(38%, 180px);
   }
+
+  .modal:not(.game-over-fullscreen) .modal-card {
+    width: min(420px, 94vw);
+    padding: 12px;
+  }
+
+  .modal.final-overlay .modal-actions .image-btn,
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
+    width: min(148px, 31vw);
+  }
 }
 
 @media (max-width: 500px) {
@@ -1296,10 +1325,10 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 74px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr);
     gap: 4px;
     min-height: 320px;
-    height: min(calc(100svh - 176px), 500px);
+    height: min(calc(100svh - 198px), 450px);
   }
 
   .fighter {
@@ -1341,8 +1370,8 @@ body.paused .battle-screen .boss {
   }
 
   .charge-meter {
-    width: 72px;
-    padding: 4px;
+    width: 64px;
+    padding: 3px;
   }
 
   .charge-percent {
@@ -1354,7 +1383,11 @@ body.paused .battle-screen .boss {
   }
 
   .character-wrap {
-    min-height: clamp(110px, 22svh, 180px);
+    min-height: clamp(92px, 16svh, 146px);
+  }
+
+  .control-row {
+    grid-template-columns: 1fr 1fr;
   }
 
   .control-row,
@@ -1389,5 +1422,10 @@ body.paused .battle-screen .boss {
     --runner-size: clamp(46px, 18vw, 60px);
     height: 104px;
     padding: 0 var(--runner-pad);
+  }
+
+  .modal.final-overlay .modal-actions .image-btn,
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
+    width: min(124px, 36vw);
   }
 }
