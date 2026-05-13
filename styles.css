@@ -9,8 +9,8 @@
   --hp: #34c759;
   --hp-boss: #f25042;
   --power: #26d6ff;
-  --btn: #ffd648;
-  --btn-shadow: #bb8a1d;
+  /* --btn: #64ffd8; */
+  /* --btn-shadow: #bb8a1d; */
   --danger: #ff6a4f;
   --danger-shadow: #94311f;
   --def: #65d0ff;
@@ -220,10 +220,6 @@ strong,
   z-index: 2;
 }
 
-#start-btn {
-  width: min(420px, 92vw);
-}
-
 .kicker {
   color: #ffe56a;
   font-size: clamp(0.65rem, 1.8vw, 0.95rem);
@@ -241,9 +237,9 @@ h1 {
 .primary-btn,
 .action-btn,
 .modal-actions button {
-  border: 3px solid var(--line);
+  /* border: 3px solid var(--line); */
   background: var(--btn);
-  color: #2d2000;
+  /* color: #2d2000; */
   text-shadow: none;
   box-shadow: 0 5px 0 var(--btn-shadow);
   padding: 11px 14px;
@@ -258,15 +254,19 @@ h1 {
 }
 
 .image-btn {
-  width: min(360px, 84vw);
+  --ib-max: 280px;
+  --ib-vw: 76vw;
+  /* --image-btn-fill: #64ffd8; */
+  width: min(var(--ib-max), var(--ib-vw));
   aspect-ratio: 2.66;
   min-height: 0;
   padding: 0;
   border: 0;
-  background-color: transparent;
+  overflow: hidden;
+  background-color: var(--image-btn-fill);
   background-position: center;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   box-shadow: none;
   color: transparent;
   font-size: 0;
@@ -278,21 +278,59 @@ h1 {
   box-shadow: none;
 }
 
-#start-btn.image-btn {
-  width: min(310px, 74vw);
+.primary-btn.image-btn,
+.modal-actions button.image-btn {
+  background-color: var(--image-btn-fill);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
-#next-stage-btn.image-btn,
-.victory-actions .image-btn,
-.modal-actions .image-btn {
-  width: min(320px, 82vw);
-  border: 0;
-  background: transparent;
-  box-shadow: none;
+#start-btn.image-btn {
+  --ib-max: 250px;
+  --ib-vw: 70vw;
 }
 
 .stage-clear-card #next-stage-btn.image-btn {
+  --ib-max: 248px;
+  --ib-vw: 72vw;
   background-image: url("assets/pictures/buttons/next_level.png");
+}
+
+#victory-restart-btn.image-btn {
+  --ib-max: 230px;
+  --ib-vw: 70vw;
+}
+
+#victory-home-btn.image-btn {
+  --ib-max: 230px;
+  --ib-vw: 70vw;
+}
+
+.modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="restart"] {
+  --ib-max: 248px;
+  --ib-vw: 74vw;
+}
+
+.modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="home"] {
+  --ib-max: 248px;
+  --ib-vw: 74vw;
+}
+
+.modal.final-overlay .modal-actions .image-btn,
+.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
+  --ib-max: 156px;
+  --ib-vw: 30vw;
+}
+
+.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="continue"] {
+  --ib-max: 168px;
+  --ib-vw: 34vw;
+}
+
+.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="home"] {
+  --ib-max: 152px;
+  --ib-vw: 30vw;
 }
 
 .image-btn[data-btn-action="start"] {
@@ -909,11 +947,6 @@ h1 {
   gap: 6px;
 }
 
-.modal.final-overlay .modal-actions .image-btn,
-.modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
-  width: min(170px, 32vw);
-}
-
 .modal {
   position: fixed;
   inset: 0;
@@ -1329,7 +1362,24 @@ body.paused .battle-screen .boss {
 
   .modal.final-overlay .modal-actions .image-btn,
   .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
-    width: min(148px, 31vw);
+    --ib-max: 138px;
+    --ib-vw: 29vw;
+  }
+
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="continue"] {
+    --ib-max: 148px;
+    --ib-vw: 32vw;
+  }
+
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="home"] {
+    --ib-max: 132px;
+    --ib-vw: 28vw;
+  }
+
+  .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="restart"],
+  .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="home"] {
+    --ib-max: 228px;
+    --ib-vw: 78vw;
   }
 }
 
@@ -1447,6 +1497,23 @@ body.paused .battle-screen .boss {
 
   .modal.final-overlay .modal-actions .image-btn,
   .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn {
-    width: min(124px, 36vw);
+    --ib-max: 118px;
+    --ib-vw: 34vw;
+  }
+
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="continue"] {
+    --ib-max: 128px;
+    --ib-vw: 38vw;
+  }
+
+  .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="home"] {
+    --ib-max: 112px;
+    --ib-vw: 34vw;
+  }
+
+  .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="restart"],
+  .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="home"] {
+    --ib-max: 200px;
+    --ib-vw: 82vw;
   }
 }

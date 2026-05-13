@@ -171,7 +171,7 @@ const uiRewardMedalLine = "你獲得了勇者勳章";
 const uiPrincessAria = "公主角色";
 
 const copy = {
-  documentTitle: "土豆勇者挑戰",
+  documentTitle: "土豆勇者大冒險",
   home: {
     loadingBarAria: "載入進度",
     loadingWithPercent: (n) => `遊戲載入中 ${n}%`,
