@@ -151,8 +151,6 @@ const chargeTickMs = 50;
 const stageResultBufferMs = 850;
 const stageClearPopupDelayMs = 320;
 const gameOverPopupDelayMs = 520;
-const finalVictoryModalDelayMs = 5600;
-const finalVictoryPopupDelayMs = 260;
 
 const musicTracks = {
   home: { src: "assets/bgm/flowerbed_fields.ogg", loop: true },
@@ -167,6 +165,89 @@ const sfxTracks = {
   playerAttack: "assets/bgm/attack1.mp3",
   playerChargeAttack: "assets/bgm/slash_attack1.mp3",
   bossAttack: "assets/bgm/laser2.mp3"
+};
+
+const uiRewardMedalLine = "你獲得了勇者勳章";
+const uiPrincessAria = "公主角色";
+
+const copy = {
+  documentTitle: "土豆勇者挑戰",
+  home: {
+    loadingBarAria: "載入進度",
+    loadingWithPercent: (n) => `遊戲載入中 ${n}%`,
+    start: "開始冒險",
+    startAria: "開始冒險"
+  },
+  battle: {
+    musicTitle: "音樂",
+    musicAriaOn: "音樂開啟",
+    musicAriaOff: "音樂關閉",
+    pauseTitle: "暫停",
+    pauseAria: "暫停",
+    homeTitle: "首頁",
+    homeAria: "首頁",
+    icons: {
+      musicOn: "♫",
+      musicOff: "♪",
+      pause: "II",
+      resume: "▶",
+      home: "⌂"
+    },
+    badgeRowAria: "關卡徽章",
+    playerHpLabel: "土豆勇者生命值",
+    powerLabel: "能量",
+    attack: "攻擊",
+    defend: "防禦",
+    chargeAria: "長按蓄力",
+    chargeLabelIdle: "長按蓄力",
+    chargeLabelCharging: "蓄力中",
+    chargeLabelFull: "蓄力完成",
+    chargeLabelDefend: "防禦中",
+    playerAria: "玩家角色",
+    bossAria: "Boss 角色",
+    stageFormat: (n) => `第 ${n} 關`,
+    finalStage: "Final Stage",
+    bossDescFormat: (difficulty, moveName, coreThreat) =>
+      `難度 ${difficulty}｜招式 ${moveName}：${coreThreat}`,
+    hitCrit: (damage) => `暴擊 -${damage}`,
+    hitDamage: (damage) => `-${damage}`
+  },
+  stageClear: {
+    kicker: "STAGE CLEAR",
+    titleFormat: (stageNumber) => `第 ${stageNumber} 關勝利`,
+    defaultMessage: "你成功擊敗 Boss，準備前往下一關。",
+    next: "下一關",
+    nextAria: "下一關"
+  },
+  victory: {
+    kicker: "STAGE CLEAR",
+    title: "全關卡突破",
+    intro: "你已經打倒全部 Boss，土豆勇者達成完美通關。",
+    rescueStageAria: "勝利舞台",
+    princessAria: uiPrincessAria,
+    rewardMedal: uiRewardMedalLine,
+    stars: "★★★★★★★★",
+    restart: "重新遊戲",
+    restartAria: "重新遊戲",
+    home: "回到首頁",
+    homeAria: "回到首頁"
+  },
+  modal: {
+    // defaultTitle: "提示",
+    princessAria: uiPrincessAria,
+    rewardLine: uiRewardMedalLine
+  },
+  gameOver: {
+    message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
+    restart: "重新遊戲",
+    home: "回到首頁"
+  },
+  pause: {
+    title: "遊戲暫停",
+    message: "戰鬥已暫停。準備好後繼續迎戰 Boss。",
+    continue: "繼續遊戲",
+    home: "回到首頁"
+  }
 };
 
 const state = {
@@ -198,13 +279,22 @@ const els = {
   homeScreen: document.querySelector("#home-screen"),
   battleScreen: document.querySelector("#battle-screen"),
   stageClearScreen: document.querySelector("#stage-clear-screen"),
+  stageClearKicker: document.querySelector("#stage-clear-kicker"),
   stageClearTitle: document.querySelector("#stage-clear-title"),
   stageClearMessage: document.querySelector("#stage-clear-message"),
   nextStageBtn: document.querySelector("#next-stage-btn"),
   victoryScreen: document.querySelector("#victory-screen"),
+  victoryKicker: document.querySelector("#victory-kicker"),
+  victoryTitle: document.querySelector("#victory-title"),
+  victoryIntro: document.querySelector("#victory-intro"),
+  victoryRescueStage: document.querySelector("#victory-rescue-stage"),
+  victoryPrincess: document.querySelector("#victory-princess"),
+  victoryRewardLine: document.querySelector("#victory-reward-line"),
+  victoryStars: document.querySelector("#victory-stars"),
   loadingPanel: document.querySelector("#loading-panel"),
   homeContent: document.querySelector("#home-content"),
   homeRunner: document.querySelector("#home-runner"),
+  loadingBar: document.querySelector("#loading-bar"),
   loadingProgress: document.querySelector("#loading-progress"),
   loadingText: document.querySelector("#loading-text"),
   bgm: document.querySelector("#bgm"),
@@ -215,8 +305,10 @@ const els = {
   stageLabel: document.querySelector("#stage-label"),
   bossTitle: document.querySelector("#boss-title"),
   badgeRow: document.querySelector("#badge-row"),
+  playerHpLabel: document.querySelector("#player-hp-label"),
   playerHpText: document.querySelector("#player-hp-text"),
   playerHpBar: document.querySelector("#player-hp-bar"),
+  powerLabel: document.querySelector("#power-label"),
   powerText: document.querySelector("#power-text"),
   powerBar: document.querySelector("#power-bar"),
   bossName: document.querySelector("#boss-name"),
@@ -238,10 +330,63 @@ const els = {
   modalMessage: document.querySelector("#modal-message"),
   modalActions: document.querySelector("#modal-actions"),
   reward: document.querySelector("#reward"),
+  modalPrincess: document.querySelector("#modal-princess"),
+  rewardLine: document.querySelector("#reward-line"),
   victoryRestartBtn: document.querySelector("#victory-restart-btn"),
   victoryHomeBtn: document.querySelector("#victory-home-btn"),
   effectLayer: null
 };
+
+function applyUiStrings() {
+  document.title = copy.documentTitle;
+
+  els.loadingBar?.setAttribute("aria-label", copy.home.loadingBarAria);
+  els.startBtn.textContent = copy.home.start;
+  els.startBtn.setAttribute("aria-label", copy.home.startAria);
+
+  els.musicBtn.textContent = copy.battle.icons.musicOn;
+  els.musicBtn.setAttribute("title", copy.battle.musicTitle);
+  els.musicBtn.setAttribute("aria-label", copy.battle.musicAriaOn);
+
+  els.pauseBtn.textContent = copy.battle.icons.pause;
+  els.pauseBtn.setAttribute("title", copy.battle.pauseTitle);
+  els.pauseBtn.setAttribute("aria-label", copy.battle.pauseAria);
+
+  els.homeBtn.textContent = copy.battle.icons.home;
+  els.homeBtn.setAttribute("title", copy.battle.homeTitle);
+  els.homeBtn.setAttribute("aria-label", copy.battle.homeAria);
+
+  els.badgeRow.setAttribute("aria-label", copy.battle.badgeRowAria);
+  els.playerHpLabel.textContent = copy.battle.playerHpLabel;
+  els.powerLabel.textContent = copy.battle.powerLabel;
+
+  els.attackBtn.textContent = copy.battle.attack;
+  els.defendBtn.textContent = copy.battle.defend;
+
+  els.player.setAttribute("aria-label", copy.battle.playerAria);
+  els.boss.setAttribute("aria-label", copy.battle.bossAria);
+  els.chargeMeter.setAttribute("aria-label", copy.battle.chargeAria);
+
+  els.stageClearKicker.textContent = copy.stageClear.kicker;
+  els.nextStageBtn.textContent = copy.stageClear.next;
+  els.nextStageBtn.setAttribute("aria-label", copy.stageClear.nextAria);
+
+  els.victoryKicker.textContent = copy.victory.kicker;
+  els.victoryTitle.textContent = copy.victory.title;
+  els.victoryIntro.textContent = copy.victory.intro;
+  els.victoryRescueStage.setAttribute("aria-label", copy.victory.rescueStageAria);
+  els.victoryPrincess.setAttribute("aria-label", copy.victory.princessAria);
+  els.victoryRewardLine.textContent = copy.victory.rewardMedal;
+  els.victoryStars.textContent = copy.victory.stars;
+
+  els.victoryRestartBtn.textContent = copy.victory.restart;
+  els.victoryRestartBtn.setAttribute("aria-label", copy.victory.restartAria);
+  els.victoryHomeBtn.textContent = copy.victory.home;
+  els.victoryHomeBtn.setAttribute("aria-label", copy.victory.homeAria);
+
+  els.modalPrincess?.setAttribute("aria-label", copy.modal.princessAria);
+  els.rewardLine.textContent = copy.modal.rewardLine;
+}
 
 function clamp(value, min, max) {
   return Math.max(min, Math.min(max, value));
@@ -402,7 +547,7 @@ function startHomeIntro() {
   els.homeRunner.classList.remove("running");
   setHomeRunnerProgress(0);
   els.loadingProgress.style.width = "0%";
-  els.loadingText.textContent = "遊戲載入中 0%";
+  els.loadingText.textContent = copy.home.loadingWithPercent(0);
   void els.homeRunner.offsetWidth;
   els.homeRunner.classList.add("running");
 
@@ -410,7 +555,7 @@ function startHomeIntro() {
     state.homeProgress = clamp(state.homeProgress + 2, 0, 100);
     setHomeRunnerProgress(state.homeProgress);
     els.loadingProgress.style.width = `${state.homeProgress}%`;
-    els.loadingText.textContent = `遊戲載入中 ${state.homeProgress}%`;
+    els.loadingText.textContent = copy.home.loadingWithPercent(state.homeProgress);
 
     if (state.homeProgress >= 100) {
       window.clearInterval(state.homeTimer);
@@ -472,9 +617,9 @@ function toggleMusic() {
 }
 
 function updateMusicButton() {
-  els.musicBtn.textContent = state.musicEnabled ? "♫" : "♪";
+  els.musicBtn.textContent = state.musicEnabled ? copy.battle.icons.musicOn : copy.battle.icons.musicOff;
   els.musicBtn.classList.toggle("muted", !state.musicEnabled);
-  els.musicBtn.setAttribute("aria-label", state.musicEnabled ? "音樂開啟" : "音樂關閉");
+  els.musicBtn.setAttribute("aria-label", state.musicEnabled ? copy.battle.musicAriaOn : copy.battle.musicAriaOff);
 }
 
 function playSfx(src, volume = 0.8) {
@@ -487,7 +632,7 @@ function playSfx(src, volume = 0.8) {
   });
 }
 
-function setChargeMeter(percent = 0, label = "長按蓄力") {
+function setChargeMeter(percent = 0, label = copy.battle.chargeLabelIdle) {
   const normalized = clamp(Math.round(percent), 0, 100);
   els.chargeMeter?.style.setProperty("--charge-percent", `${normalized}%`);
 
@@ -500,7 +645,7 @@ function setChargeMeter(percent = 0, label = "長按蓄力") {
   }
 }
 
-function resetChargeMeter(label = "長按蓄力") {
+function resetChargeMeter(label = copy.battle.chargeLabelIdle) {
   setChargeMeter(0, label);
 }
 
@@ -549,10 +694,10 @@ function loadStage() {
   els.boss.className = `boss sprite kind-${boss.kind}`;
   els.boss.classList.toggle("has-art", Boolean(bossImage));
 
-  els.stageLabel.textContent = isFinalStage ? "Final Stage" : `第 ${state.stage + 1} 關`;
+  els.stageLabel.textContent = isFinalStage ? copy.battle.finalStage : copy.battle.stageFormat(state.stage + 1);
   els.bossTitle.textContent = boss.name;
   els.bossName.textContent = boss.name;
-  els.bossDesc.textContent = `難度 ${boss.difficulty}｜招式 ${boss.moveName}：${boss.coreThreat}`;
+  els.bossDesc.textContent = copy.battle.bossDescFormat(boss.difficulty, boss.moveName, boss.coreThreat);
 
   createBadges();
   updateBars();
@@ -636,7 +781,8 @@ function bossAttack() {
     type: `boss-${fxKey}`,
     image: attackEffectImageByFx[fxKey],
     strong: isSpecial,
-    onImpact: () => flashHit(els.player, els.playerHit, isSpecial ? `暴擊 -${damage}` : `-${damage}`, isSpecial)
+    onImpact: () =>
+      flashHit(els.player, els.playerHit, isSpecial ? copy.battle.hitCrit(damage) : copy.battle.hitDamage(damage), isSpecial)
   });
 
   state.defending = false;
@@ -675,7 +821,7 @@ function attack(multiplier = 1) {
         : "assets/pictures/weapon/wooden_sword.png",
     charged: isCharged,
     strong: multiplier > 2.2,
-    onImpact: () => flashHit(els.boss, els.bossHit, `-${damage}`, multiplier > 2.2)
+    onImpact: () => flashHit(els.boss, els.bossHit, copy.battle.hitDamage(damage), multiplier > 2.2)
   });
 
   updateBars();
@@ -691,13 +837,13 @@ function beginCharge() {
   if (state.paused || state.locked) return;
 
   state.chargeStart = Date.now();
-  setChargeMeter(0, "蓄力中");
+  setChargeMeter(0, copy.battle.chargeLabelCharging);
   window.clearInterval(state.chargeTimer);
 
   state.chargeTimer = window.setInterval(() => {
     const held = Date.now() - state.chargeStart;
     const percent = clamp((held / fullChargeMs) * 100, 0, 100);
-    setChargeMeter(percent, percent >= 100 ? "蓄力完成" : "蓄力中");
+    setChargeMeter(percent, percent >= 100 ? copy.battle.chargeLabelFull : copy.battle.chargeLabelCharging);
   }, chargeTickMs);
 }
 
@@ -722,7 +868,7 @@ function defend() {
   state.chargeStart = 0;
   window.clearInterval(state.chargeTimer);
   state.chargeTimer = null;
-  setChargeMeter(0, "防禦中");
+  setChargeMeter(0, copy.battle.chargeLabelDefend);
 
   window.setTimeout(() => {
     if (!state.defending) return;
@@ -761,8 +907,8 @@ function flashHit(target, label, text, strong = false) {
 
 function showStageClearScreen(boss) {
   const stageNumber = state.stage + 1;
-  els.stageClearTitle.textContent = `第 ${stageNumber} 關勝利`;
-  els.stageClearMessage.textContent = boss?.cheer || "你成功擊敗 Boss，準備前往下一關。";
+  els.stageClearTitle.textContent = copy.stageClear.titleFormat(stageNumber);
+  els.stageClearMessage.textContent = boss?.cheer || copy.stageClear.defaultMessage;
   clearTransitionTimers();
   els.stageClearScreen.classList.remove("show-screen", "show-card");
   els.stageClearScreen.classList.remove("hidden");
@@ -819,24 +965,11 @@ function showVictoryScreen() {
   hideModal();
   state.paused = false;
   state.locked = true;
-  els.pauseBtn.textContent = "II";
+  els.pauseBtn.textContent = copy.battle.icons.pause;
   document.body.classList.remove("paused");
   setScreen("victory");
   startMusic("victory");
   playVictoryScene();
-  state.resultTransitionTimer = window.setTimeout(() => {
-    if (state.screen !== "victory") return;
-    showModal({
-      type: "final",
-      title: "全關卡突破",
-      message: "你已經打倒全部 Boss，土豆勇者達成完美通關。",
-      popupDelayMs: finalVictoryPopupDelayMs,
-      actions: [
-        { label: "重新遊戲", handler: startGame },
-        { label: "回到首頁", handler: goHome }
-      ]
-    });
-  }, finalVictoryModalDelayMs);
 }
 
 function playVictoryScene() {
@@ -852,12 +985,12 @@ function gameOver() {
   state.resultTransitionTimer = window.setTimeout(() => {
     showModal({
       type: "over",
-      message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
+      message: copy.gameOver.message,
       popupDelayMs: gameOverPopupDelayMs,
       musicTrackOnPopup: "gameOver",
       actions: [
-        { label: "重新遊戲", handler: startGame },
-        { label: "回到首頁", handler: goHome }
+        { label: copy.gameOver.restart, handler: startGame, btnAction: "restart" },
+        { label: copy.gameOver.home, handler: goHome, btnAction: "home" }
       ]
     });
   }, stageResultBufferMs);
@@ -868,16 +1001,16 @@ function togglePause() {
 
   state.paused = !state.paused;
   document.body.classList.toggle("paused", state.paused);
-  els.pauseBtn.textContent = state.paused ? "▶" : "II";
+  els.pauseBtn.textContent = state.paused ? copy.battle.icons.resume : copy.battle.icons.pause;
 
   if (state.paused) {
     showModal({
       type: "pause",
-      title: "遊戲暫停",
-      message: "戰鬥已暫停。準備好後繼續迎戰 Boss。",
+      title: copy.pause.title,
+      message: copy.pause.message,
       actions: [
-        { label: "繼續遊戲", handler: togglePause },
-        { label: "回到首頁", handler: goHome }
+        { label: copy.pause.continue, handler: togglePause, btnAction: "continue" },
+        { label: copy.pause.home, handler: goHome, btnAction: "home" }
       ]
     });
   } else {
@@ -892,7 +1025,7 @@ function goHome() {
   state.paused = false;
   state.locked = false;
   state.chargeStart = 0;
-  els.pauseBtn.textContent = "II";
+  els.pauseBtn.textContent = copy.battle.icons.pause;
   document.body.classList.remove("paused");
   hideStageClearScreen();
   hideModal();
@@ -901,7 +1034,7 @@ function goHome() {
 
 function showModal({ type, title, message, actions, popupDelayMs = 0, musicTrackOnPopup = "" }) {
   clearTransitionTimers();
-  els.modalTitle.textContent = title || "提示";
+  els.modalTitle.textContent = title || copy.modal.defaultTitle;
   els.modalMessage.textContent = message;
   els.modal.classList.remove("is-open", "show-popup");
   els.modal.classList.remove("hidden");
@@ -923,7 +1056,7 @@ function showModal({ type, title, message, actions, popupDelayMs = 0, musicTrack
     const button = document.createElement("button");
     button.type = "button";
     button.className = "image-btn";
-    const actionKey = buttonActionFromLabel(action.label);
+    const actionKey = action.btnAction || buttonActionFromLabel(action.label);
     if (actionKey) {
       button.dataset.btnAction = actionKey;
     }
@@ -997,6 +1130,7 @@ window.addEventListener("pointerdown", () => {
   }
 });
 
+applyUiStrings();
 startHomeIntro();
 updateMusicButton();
 resetChargeMeter();

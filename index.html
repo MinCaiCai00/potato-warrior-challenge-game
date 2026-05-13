@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>土豆勇者挑戰</title>
+    <title></title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
@@ -13,63 +13,63 @@
           <div class="runner-track" aria-hidden="true">
             <div id="home-runner" class="home-runner pixel-sprite"></div>
           </div>
-          <div class="loading-bar" aria-label="載入進度">
+          <div id="loading-bar" class="loading-bar">
             <span id="loading-progress"></span>
           </div>
-          <p id="loading-text" class="loading-text">遊戲載入中 0%</p>
+          <p id="loading-text" class="loading-text"></p>
         </div>
 
         <div id="home-content" class="home-content home-ready hidden">
-          <button id="start-btn" class="primary-btn image-btn" data-btn-action="start" aria-label="開始冒險">開始冒險</button>
+          <button id="start-btn" class="primary-btn image-btn" type="button" data-btn-action="start"></button>
         </div>
       </section>
 
       <section id="battle-screen" class="battle-screen hidden" aria-live="polite">
         <div class="top-actions">
-          <button id="music-btn" class="icon-btn" title="音樂" aria-label="音樂">♫</button>
-          <button id="pause-btn" class="icon-btn" title="暫停" aria-label="暫停">II</button>
-          <button id="home-btn" class="icon-btn" title="首頁" aria-label="首頁">⌂</button>
+          <button id="music-btn" class="icon-btn" type="button"></button>
+          <button id="pause-btn" class="icon-btn" type="button"></button>
+          <button id="home-btn" class="icon-btn" type="button"></button>
         </div>
 
         <header class="stage-header">
           <div>
-            <p id="stage-label" class="stage-label">第 1 關</p>
-            <h2 id="boss-title">Boss</h2>
+            <p id="stage-label" class="stage-label"></p>
+            <h2 id="boss-title"></h2>
           </div>
-          <div id="badge-row" class="badge-row" aria-label="關卡徽章"></div>
+          <div id="badge-row" class="badge-row"></div>
         </header>
 
         <div class="arena">
           <article class="fighter player-card">
             <div class="stat-block">
               <div class="stat-line">
-                <span>土豆勇者生命值</span>
-                <strong id="player-hp-text">100 / 100</strong>
+                <span id="player-hp-label"></span>
+                <strong id="player-hp-text"></strong>
               </div>
               <div class="bar hp-bar"><span id="player-hp-bar"></span></div>
               <div class="stat-line">
-                <span>能量</span>
-                <strong id="power-text">0%</strong>
+                <span id="power-label"></span>
+                <strong id="power-text"></strong>
               </div>
               <div class="bar power-bar"><span id="power-bar"></span></div>
             </div>
 
             <div class="character-wrap">
-              <div id="player" class="player sprite" aria-label="玩家角色"></div>
+              <div id="player" class="player sprite"></div>
               <div id="player-hit" class="hit-text"></div>
             </div>
 
             <div class="control-row">
-              <button id="attack-btn" class="action-btn attack-btn">攻擊</button>
-              <button id="defend-btn" class="action-btn defend-btn">防禦</button>
+              <button id="attack-btn" class="action-btn attack-btn" type="button"></button>
+              <button id="defend-btn" class="action-btn defend-btn" type="button"></button>
             </div>
           </article>
 
           <div class="versus">
-            <button id="charge-meter" class="charge-meter" type="button" aria-label="長按蓄力">
+            <button id="charge-meter" class="charge-meter" type="button">
               <span class="charge-center">
-                <strong id="charge-percent-text" class="charge-percent">0%</strong>
-                <small id="charge-label" class="charge-label">長按蓄力</small>
+                <strong id="charge-percent-text" class="charge-percent"></strong>
+                <small id="charge-label" class="charge-label"></small>
               </span>
             </button>
           </div>
@@ -77,8 +77,8 @@
           <article class="fighter boss-card">
             <div class="stat-block">
               <div class="stat-line">
-                <span id="boss-name">Boss</span>
-                <strong id="boss-hp-text">120 / 120</strong>
+                <span id="boss-name"></span>
+                <strong id="boss-hp-text"></strong>
               </div>
               <div class="bar hp-bar boss-hp"><span id="boss-hp-bar"></span></div>
             </div>
@@ -86,11 +86,11 @@
             <div id="battle-line-bubble" class="battle-line-bubble" aria-live="polite"></div>
 
             <div class="character-wrap">
-              <div id="boss" class="boss sprite" aria-label="Boss 角色"></div>
+              <div id="boss" class="boss sprite"></div>
               <div id="boss-hit" class="hit-text"></div>
             </div>
 
-            <p id="boss-desc" class="boss-desc">Boss 描述</p>
+            <p id="boss-desc" class="boss-desc"></p>
           </article>
         </div>
 
@@ -99,32 +99,32 @@
 
       <section id="stage-clear-screen" class="stage-clear-screen hidden" aria-live="polite">
         <div class="stage-clear-card">
-          <p class="kicker">STAGE CLEAR</p>
-          <h2 id="stage-clear-title">第 1 關勝利</h2>
-          <p id="stage-clear-message" class="intro">你成功擊敗 Boss，準備前往下一關。</p>
-          <button id="next-stage-btn" class="primary-btn image-btn" data-btn-action="next" aria-label="下一關">下一關</button>
+          <p id="stage-clear-kicker" class="kicker"></p>
+          <h2 id="stage-clear-title"></h2>
+          <p id="stage-clear-message" class="intro"></p>
+          <button id="next-stage-btn" class="primary-btn image-btn" type="button" data-btn-action="next"></button>
         </div>
       </section>
 
       <section id="victory-screen" class="victory-screen hidden" aria-live="polite">
         <div class="victory-scene">
-          <p class="kicker">STAGE CLEAR</p>
-          <h2>全關卡突破</h2>
-          <p class="intro">你已經打倒全部 Boss，土豆勇者達成完美通關。</p>
+          <p id="victory-kicker" class="kicker"></p>
+          <h2 id="victory-title"></h2>
+          <p id="victory-intro" class="intro"></p>
 
-          <div class="rescue-stage" aria-label="勝利舞台">
+          <div id="victory-rescue-stage" class="rescue-stage">
             <div class="victory-player player sprite"></div>
-            <div class="victory-princess sprite" aria-label="公主角色"></div>
+            <div id="victory-princess" class="victory-princess sprite"></div>
           </div>
 
           <div class="reward-board">
-            <strong>你獲得了勇者勳章</strong>
-            <div class="victory-stars" aria-hidden="true">★★★★★★★★</div>
+            <strong id="victory-reward-line"></strong>
+            <div id="victory-stars" class="victory-stars" aria-hidden="true"></div>
           </div>
 
           <div class="victory-actions">
-            <button id="victory-restart-btn" class="primary-btn image-btn" data-btn-action="restart" aria-label="重新遊戲">重新遊戲</button>
-            <button id="victory-home-btn" class="primary-btn image-btn" data-btn-action="home" aria-label="回到首頁">回到首頁</button>
+            <button id="victory-restart-btn" class="primary-btn image-btn" type="button" data-btn-action="restart"></button>
+            <button id="victory-home-btn" class="primary-btn image-btn" type="button" data-btn-action="home"></button>
           </div>
         </div>
       </section>
@@ -132,11 +132,11 @@
 
     <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-card">
-        <h2 id="modal-title">提示</h2>
-        <p id="modal-message">訊息內容</p>
+        <h2 id="modal-title"></h2>
+        <p id="modal-message"></p>
         <div id="reward" class="reward hidden">
-          <div class="princess" aria-label="公主角色"></div>
-          <p>你獲得了勇者勳章</p>
+          <div id="modal-princess" class="princess"></div>
+          <p id="reward-line"></p>
         </div>
         <div id="modal-actions" class="modal-actions"></div>
       </div>

@@ -774,15 +774,44 @@ h1 {
 }
 
 .victory-screen {
+  position: relative;
+  overflow: hidden;
   background-image: url("assets/pictures/background/perfect_victory_bg.jpg");
 }
 
 .victory-scene {
-  background: rgba(10, 16, 40, 0.6);
+  position: relative;
+  z-index: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(12px, 3vw, 20px);
+  padding: clamp(16px, 4vw, 28px);
+  min-height: 100vh;
+  min-height: 100svh;
+  box-sizing: border-box;
+  background: transparent;
+}
+
+.victory-scene > *:not(.rescue-stage) {
+  position: relative;
+  z-index: 2;
+  max-width: min(520px, 100%);
 }
 
 .rescue-stage {
-  background: rgba(133, 183, 255, 0.3);
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: rgba(0, 0, 0, 0.78);
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .victory-player {
@@ -1288,10 +1317,6 @@ body.paused .battle-screen .boss {
     padding: 14px;
   }
 
-  .rescue-stage {
-    min-height: clamp(220px, 58vw, 320px);
-  }
-
   .victory-player,
   .victory-princess {
     width: min(38%, 180px);
@@ -1400,10 +1425,6 @@ body.paused .battle-screen .boss {
     border-width: 2px;
     height: 12px;
     margin: 4px 0 7px;
-  }
-
-  .rescue-stage {
-    min-height: 210px;
   }
 
   .victory-player,
