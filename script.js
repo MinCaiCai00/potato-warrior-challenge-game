@@ -134,6 +134,17 @@ const attackEffectImageByFx = {
   illusion: "assets/pictures/attackFx/mirror.png"
 };
 
+const stageBackgrounds = [
+  "assets/pictures/background/part_01.jpg",
+  "assets/pictures/background/part_02.jpg",
+  "assets/pictures/background/part_03.jpg",
+  "assets/pictures/background/part_04.jpg",
+  "assets/pictures/background/part_05.jpg",
+  "assets/pictures/background/part_06.jpg",
+  "assets/pictures/background/part_07.jpg",
+  "assets/pictures/background/part_08.jpg"
+];
+
 const maxPlayerHp = 100;
 const minChargeMs = 220;
 
@@ -352,10 +363,15 @@ function setScreen(screen) {
   }
 }
 
+function setHomeLoadingState(isLoading) {
+  els.homeScreen.classList.toggle("loading", isLoading);
+}
+
 function startHomeIntro() {
   window.clearInterval(state.homeTimer);
   state.homeProgress = 0;
   state.homeReady = false;
+  setHomeLoadingState(true);
   els.loadingPanel.classList.remove("hidden");
   els.homeContent.classList.add("hidden");
   els.homeRunner.classList.remove("running");
@@ -381,6 +397,7 @@ function showHomeReady() {
   if (state.screen !== "home") return;
 
   state.homeReady = true;
+  setHomeLoadingState(false);
   els.loadingPanel.classList.add("hidden");
   els.homeContent.classList.remove("hidden");
   startMusic("home");
@@ -460,12 +477,14 @@ function startGame() {
 function loadStage() {
   const boss = currentBoss();
   const isFinalStage = state.stage === bosses.length - 1;
+  const stageBackground = stageBackgrounds[state.stage] || stageBackgrounds[stageBackgrounds.length - 1];
 
   clearTimers();
   state.bossHp = boss.hp;
   state.defending = false;
   state.locked = false;
   state.chargeStart = 0;
+  els.battleScreen.style.setProperty("--stage-bg-image", `url("${stageBackground}")`);
 
   els.boss.style.setProperty("--boss-color", boss.color);
   const bossImage = bossImageByKind[boss.kind];
@@ -837,4 +856,3 @@ window.addEventListener("pointerdown", () => {
 
 startHomeIntro();
 updateMusicButton();
-
