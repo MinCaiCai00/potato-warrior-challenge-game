@@ -20,7 +20,7 @@
         </div>
 
         <div id="home-content" class="home-content home-ready hidden">
-          <button id="start-btn" class="primary-btn">開始冒險</button>
+          <button id="start-btn" class="primary-btn image-btn" data-btn-action="start" aria-label="開始冒險">開始冒險</button>
         </div>
       </section>
 
@@ -102,7 +102,7 @@
           <p class="kicker">STAGE CLEAR</p>
           <h2 id="stage-clear-title">第 1 關勝利</h2>
           <p id="stage-clear-message" class="intro">你成功擊敗 Boss，準備前往下一關。</p>
-          <button id="next-stage-btn" class="primary-btn">下一關</button>
+          <button id="next-stage-btn" class="primary-btn image-btn" data-btn-action="next" aria-label="下一關">下一關</button>
         </div>
       </section>
 
@@ -123,8 +123,8 @@
           </div>
 
           <div class="victory-actions">
-            <button id="victory-restart-btn" class="primary-btn">重新挑戰</button>
-            <button id="victory-home-btn" class="primary-btn">返回首頁</button>
+            <button id="victory-restart-btn" class="primary-btn image-btn" data-btn-action="restart" aria-label="重新遊戲">重新遊戲</button>
+            <button id="victory-home-btn" class="primary-btn image-btn" data-btn-action="home" aria-label="回到首頁">回到首頁</button>
           </div>
         </div>
       </section>
@@ -132,7 +132,6 @@
 
     <div id="modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
       <div class="modal-card">
-        <div id="modal-visual" class="modal-visual"></div>
         <h2 id="modal-title">提示</h2>
         <p id="modal-message">訊息內容</p>
         <div id="reward" class="reward hidden">

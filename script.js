@@ -148,13 +148,18 @@ const stageBackgrounds = [
 const maxPlayerHp = 100;
 const fullChargeMs = 1400;
 const chargeTickMs = 50;
+const stageResultBufferMs = 850;
+const stageClearPopupDelayMs = 320;
+const gameOverPopupDelayMs = 520;
+const finalVictoryModalDelayMs = 5600;
+const finalVictoryPopupDelayMs = 260;
 
 const musicTracks = {
-  home: "assets/bgm/flowerbed_fields.ogg",
-  battle: "assets/bgm/game_bgm_elevenlabs.mp3_1778581884091.mp3",
-  stageClear: "assets/bgm/part_win.mp3",
-  victory: "assets/bgm/Where_the_Map_Ends.mp3",
-  gameOver: "assets/bgm/dark_atmosphere.mp3"
+  home: { src: "assets/bgm/flowerbed_fields.ogg", loop: true },
+  battle: { src: "assets/bgm/game_bgm_elevenlabs.mp3_1778581884091.mp3", loop: true },
+  stageClear: { src: "assets/bgm/part_win.mp3", loop: false },
+  victory: { src: "assets/bgm/Where_the_Map_Ends.mp3", loop: true },
+  gameOver: { src: "assets/bgm/dark_atmosphere.mp3", loop: true }
 };
 
 const sfxTracks = {
@@ -181,6 +186,9 @@ const state = {
   battleLineHideTimer: null,
   powerTimer: null,
   homeTimer: null,
+  resultTransitionTimer: null,
+  popupRevealTimer: null,
+  stageClearRevealTimer: null,
   musicEnabled: true,
   homeReady: false,
   currentTrack: ""
@@ -229,7 +237,6 @@ const els = {
   modalTitle: document.querySelector("#modal-title"),
   modalMessage: document.querySelector("#modal-message"),
   modalActions: document.querySelector("#modal-actions"),
-  modalVisual: document.querySelector("#modal-visual"),
   reward: document.querySelector("#reward"),
   victoryRestartBtn: document.querySelector("#victory-restart-btn"),
   victoryHomeBtn: document.querySelector("#victory-home-btn"),
@@ -419,7 +426,8 @@ function startMusic(track = "home") {
   if (!state.musicEnabled || !els.bgm) return;
 
   updateMusicButton();
-  const requestedTrack = musicTracks[track] || musicTracks[activeMusicTrackKey()] || musicTracks.home;
+  const requestedTrackConfig = musicTracks[track] || musicTracks[activeMusicTrackKey()] || musicTracks.home;
+  const requestedTrack = requestedTrackConfig.src;
 
   if (state.currentTrack !== requestedTrack) {
     els.bgm.pause();
@@ -428,6 +436,7 @@ function startMusic(track = "home") {
     state.currentTrack = requestedTrack;
   }
 
+  els.bgm.loop = requestedTrackConfig.loop !== false;
   els.bgm.volume = 0.34;
   const playRequest = els.bgm.play();
   playRequest?.catch(() => {
@@ -567,6 +576,15 @@ function clearTimers() {
   state.battleLineHideTimer = null;
   state.powerTimer = null;
   state.chargeTimer = null;
+}
+
+function clearTransitionTimers() {
+  window.clearTimeout(state.resultTransitionTimer);
+  window.clearTimeout(state.popupRevealTimer);
+  window.clearTimeout(state.stageClearRevealTimer);
+  state.resultTransitionTimer = null;
+  state.popupRevealTimer = null;
+  state.stageClearRevealTimer = null;
 }
 
 function scheduleBossAttack() {
@@ -736,10 +754,23 @@ function showStageClearScreen(boss) {
   const stageNumber = state.stage + 1;
   els.stageClearTitle.textContent = `第 ${stageNumber} 關勝利`;
   els.stageClearMessage.textContent = boss?.cheer || "你成功擊敗 Boss，準備前往下一關。";
+  startMusic("stageClear");
+  clearTransitionTimers();
+  els.stageClearScreen.classList.remove("show-screen", "show-card");
   els.stageClearScreen.classList.remove("hidden");
+
+  requestAnimationFrame(() => {
+    els.stageClearScreen.classList.add("show-screen");
+    state.stageClearRevealTimer = window.setTimeout(() => {
+      startMusic("stageClear");
+      els.stageClearScreen.classList.add("show-card");
+    }, stageClearPopupDelayMs);
+  });
 }
 
 function hideStageClearScreen() {
+  clearTransitionTimers();
+  els.stageClearScreen.classList.remove("show-screen", "show-card");
   els.stageClearScreen.classList.add("hidden");
 }
 
@@ -757,8 +788,10 @@ function stageWin() {
     return;
   }
 
-  startMusic("stageClear");
-  showStageClearScreen(boss);
+  state.resultTransitionTimer = window.setTimeout(() => {
+    if (state.screen !== "battle" || !state.locked) return;
+    showStageClearScreen(boss);
+  }, stageResultBufferMs);
 }
 
 function nextStage() {
@@ -773,6 +806,7 @@ function nextStage() {
 
 function showVictoryScreen() {
   clearTimers();
+  clearTransitionTimers();
   hideStageClearScreen();
   hideModal();
   state.paused = false;
@@ -781,7 +815,20 @@ function showVictoryScreen() {
   document.body.classList.remove("paused");
   setScreen("victory");
   playVictoryScene();
-  startMusic("victory");
+  state.resultTransitionTimer = window.setTimeout(() => {
+    if (state.screen !== "victory") return;
+    showModal({
+      type: "final",
+      title: "全關卡突破",
+      message: "你已經打倒全部 Boss，土豆勇者達成完美通關。",
+      popupDelayMs: finalVictoryPopupDelayMs,
+      musicTrackOnPopup: "victory",
+      actions: [
+        { label: "重新遊戲", handler: startGame },
+        { label: "回到首頁", handler: goHome }
+      ]
+    });
+  }, finalVictoryModalDelayMs);
 }
 
 function playVictoryScene() {
@@ -793,16 +840,19 @@ function playVictoryScene() {
 function gameOver() {
   state.locked = true;
   clearTimers();
-  startMusic("gameOver");
-
-  showModal({
-    type: "over",
-    message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
-    actions: [
-      { label: "重新挑戰", handler: startGame },
-      { label: "返回首頁", handler: goHome }
-    ]
-  });
+  clearTransitionTimers();
+  state.resultTransitionTimer = window.setTimeout(() => {
+    showModal({
+      type: "over",
+      message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
+      popupDelayMs: gameOverPopupDelayMs,
+      musicTrackOnPopup: "gameOver",
+      actions: [
+        { label: "重新遊戲", handler: startGame },
+        { label: "回到首頁", handler: goHome }
+      ]
+    });
+  }, stageResultBufferMs);
 }
 
 function togglePause() {
@@ -819,7 +869,7 @@ function togglePause() {
       message: "戰鬥已暫停。準備好後繼續迎戰 Boss。",
       actions: [
         { label: "繼續遊戲", handler: togglePause },
-        { label: "返回首頁", handler: goHome }
+        { label: "回到首頁", handler: goHome }
       ]
     });
   } else {
@@ -829,6 +879,7 @@ function togglePause() {
 
 function goHome() {
   clearTimers();
+  clearTransitionTimers();
   stopMusic();
   state.paused = false;
   state.locked = false;
@@ -840,27 +891,57 @@ function goHome() {
   setScreen("home");
 }
 
-function showModal({ type, title, message, actions }) {
-  els.modalTitle.textContent = title;
+function showModal({ type, title, message, actions, popupDelayMs = 0, musicTrackOnPopup = "" }) {
+  clearTransitionTimers();
+  els.modalTitle.textContent = title || "提示";
   els.modalMessage.textContent = message;
+  els.modal.classList.remove("is-open", "show-popup");
   els.modal.classList.remove("hidden");
   els.modal.classList.toggle("game-over-fullscreen", type === "over");
-  els.modalVisual.className = `modal-visual ${type}`;
+  els.modal.classList.toggle("final-overlay", type === "final");
   els.reward.classList.toggle("hidden", type !== "final");
   els.modalActions.innerHTML = "";
+
+  const buttonActionFromLabel = (label = "") => {
+    if (label.includes("開始")) return "start";
+    if (label.includes("下一")) return "next";
+    if (label.includes("繼續")) return "continue";
+    if (label.includes("首頁")) return "home";
+    if (label.includes("重新") || label.includes("再")) return "restart";
+    return "";
+  };
 
   actions.forEach((action) => {
     const button = document.createElement("button");
     button.type = "button";
+    button.className = "image-btn";
+    const actionKey = buttonActionFromLabel(action.label);
+    if (actionKey) {
+      button.dataset.btnAction = actionKey;
+    }
+    button.setAttribute("aria-label", action.label);
+    button.title = action.label;
     button.textContent = action.label;
     button.addEventListener("click", action.handler);
     els.modalActions.appendChild(button);
   });
+
+  requestAnimationFrame(() => {
+    els.modal.classList.add("is-open");
+    state.popupRevealTimer = window.setTimeout(() => {
+      if (musicTrackOnPopup) {
+        startMusic(musicTrackOnPopup);
+      }
+      els.modal.classList.add("show-popup");
+    }, popupDelayMs);
+  });
 }
 
 function hideModal() {
+  clearTransitionTimers();
+  els.modal.classList.remove("is-open", "show-popup");
   els.modal.classList.add("hidden");
-  els.modal.classList.remove("game-over-fullscreen");
+  els.modal.classList.remove("game-over-fullscreen", "final-overlay");
 }
 
 els.startBtn.addEventListener("click", startGame);
