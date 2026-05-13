@@ -1,0 +1,31 @@
+# 作業系統產生的系統檔案
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 日誌檔案與暫存檔
+*.log
+*.tmp
+*.bak
+
+# 環境變數
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# 套件安裝目錄
+node_modules/
+/jspm_packages/
+
+# 打包輸出目錄
+/dist/
+/build/
+/.next/
+/.nuxt/
+
+# 本地快取
+.eslintcache
+.stylelintcache
+.npm

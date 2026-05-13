@@ -32,8 +32,8 @@ body {
   font-family: "Press Start 2P", "VT323", "Courier New", monospace;
   letter-spacing: 0.5px;
   image-rendering: pixelated;
-  background:
-    linear-gradient(180deg, #0f1636 0%, #253e7e 35%, #3f7fc0 63%, #4ea243 63%, #356d2f 100%);
+  /* 移除原本的複雜漸層，改為深色底色，避免圖片載入前的閃爍 */
+  background-color: var(--bg-dark);
 }
 
 button {
@@ -57,35 +57,39 @@ button {
   position: relative;
 }
 
+/* 統一背景容器的基礎樣式 */
+.home-screen,
+.battle-screen,
+.stage-clear-screen,
+.victory-screen,
+.modal.game-over-fullscreen {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
+}
+
 .home-screen {
-  display: grid;
-  place-items: center;
-  padding: clamp(18px, 4vw, 48px);
-  background:
-    linear-gradient(rgba(20, 20, 38, 0.25), rgba(20, 20, 38, 0.25)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 2px, transparent 2px 6px);
+  background-image: url("assets/pictures/background/home_bg.png");
 }
 
 .home-screen::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: url("assets/pictures/game_banner.png") center / cover no-repeat;
-  opacity: 0.3;
-  filter: saturate(1.1);
-  z-index: 0;
-  pointer-events: none;
+  display: none;
 }
 
 .loading-panel,
 .home-content {
-  width: min(900px, 100%);
-  background: rgba(11, 16, 39, 0.8);
-  border: 4px solid #8bb6ff;
-  box-shadow: 0 0 0 4px #1e2f66, 0 12px 0 rgba(0, 0, 0, 0.35);
-  padding: clamp(16px, 3vw, 28px);
-  position: relative;
-  z-index: 1;
+  background: rgba(11, 16, 39, 0.85);
+  backdrop-filter: blur(4px);
+}
+
+.battle-screen {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url("assets/pictures/backgrounds/battle_field.png");
+  background-color: transparent;
+}
+
+.ground {
+  opacity: 0.8;
 }
 
 .loading-panel {
@@ -595,30 +599,15 @@ h1 {
 }
 
 .victory-screen {
-  display: grid;
-  place-items: center;
-  padding: 18px;
-  background:
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.05) 0 3px, transparent 3px 9px),
-    linear-gradient(180deg, #1a2d60 0%, #3969bb 58%, #57a84b 58%, #3f8139 100%);
+  background-image: url("assets/pictures/background/perfect_victory_bg.png");
 }
 
 .victory-scene {
-  width: min(900px, 100%);
-  background: rgba(10, 16, 40, 0.82);
-  border: 4px solid #8bb6ff;
-  box-shadow: 0 10px 0 rgba(0, 0, 0, 0.35);
-  padding: 18px;
-  text-align: center;
+  background: rgba(10, 16, 40, 0.6);
 }
 
 .rescue-stage {
-  position: relative;
-  min-height: clamp(260px, 44vw, 360px);
-  margin: 16px 0;
-  border: 4px solid #87a8ff;
-  background: linear-gradient(180deg, #85b7ff 0%, #4c76c6 100%);
-  overflow: hidden;
+  background: rgba(133, 183, 255, 0.3);
 }
 
 .victory-player {
@@ -721,11 +710,8 @@ h1 {
 }
 
 .modal.game-over-fullscreen {
-  padding: 0;
-  background:
-    linear-gradient(rgba(8, 12, 28, 0.8), rgba(8, 12, 28, 0.86)),
-    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.08) 0 3px, transparent 3px 9px),
-    linear-gradient(180deg, #1f336e 0%, #355fa9 54%, #4f9d49 54%, #3a7c35 100%);
+  background-image: url("assets/pictures/background/game_over_bg.png");
+  background-color: transparent;
 }
 
 .modal.game-over-fullscreen .modal-card {
