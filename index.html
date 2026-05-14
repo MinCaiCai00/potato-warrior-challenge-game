@@ -42,16 +42,20 @@
         <div class="arena">
           <article class="fighter player-card">
             <div class="stat-block">
-              <div class="stat-line">
-                <span id="player-hp-label"></span>
-                <strong id="player-hp-text"></strong>
+              <div class="stat-row">
+                <span id="player-hp-label" class="stat-label"></span>
+                <div class="bar hp-bar">
+                  <span id="player-hp-bar"></span>
+                  <strong id="player-hp-text" class="bar-text"></strong>
+                </div>
               </div>
-              <div class="bar hp-bar"><span id="player-hp-bar"></span></div>
-              <div class="stat-line">
-                <span id="power-label"></span>
-                <strong id="power-text"></strong>
+              <div class="stat-row">
+                <span id="power-label" class="stat-label"></span>
+                <div class="bar power-bar">
+                  <span id="power-bar"></span>
+                  <strong id="power-text" class="bar-text"></strong>
+                </div>
               </div>
-              <div class="bar power-bar"><span id="power-bar"></span></div>
             </div>
 
             <div class="character-wrap">
@@ -76,11 +80,13 @@
 
           <article class="fighter boss-card">
             <div class="stat-block">
-              <div class="stat-line">
-                <span id="boss-name"></span>
-                <strong id="boss-hp-text"></strong>
+              <div class="stat-row">
+                <span id="boss-name" class="stat-label"></span>
+                <div class="bar hp-bar boss-hp">
+                  <span id="boss-hp-bar"></span>
+                  <strong id="boss-hp-text" class="bar-text"></strong>
+                </div>
               </div>
-              <div class="bar hp-bar boss-hp"><span id="boss-hp-bar"></span></div>
             </div>
 
             <div id="battle-line-bubble" class="battle-line-bubble" aria-live="polite"></div>
