@@ -738,17 +738,17 @@ h1 {
   display: block;
   visibility: hidden;
   align-self: start;
-  width: min(100%, 520px);
-  min-height: 78px;
+  width: min(100%, 420px);
+  min-height: 60px;
   border: 3px solid #101010;
   border-radius: 14px;
   background: rgba(16, 24, 46, 0.92);
   color: #fff5cc;
   text-shadow: 1px 1px 0 #000;
   margin: 2px auto 4px;
-  padding: 14px 16px;
-  line-height: 1.65;
-  font-size: clamp(0.68rem, 1.6vw, 0.92rem);
+  padding: 10px 14px;
+  line-height: 1.55;
+  font-size: clamp(0.62rem, 1.4vw, 0.85rem);
   pointer-events: none;
   opacity: 1;
   transform: none;
@@ -1498,10 +1498,10 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    width: min(100%, 380px);
-    min-height: 64px;
-    padding: 11px 12px;
-    font-size: clamp(0.58rem, 1.9vw, 0.72rem);
+    width: min(100%, 340px);
+    min-height: 54px;
+    padding: 8px 10px;
+    font-size: clamp(0.55rem, 1.8vw, 0.68rem);
   }
 
   .versus {
@@ -1636,10 +1636,10 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    width: min(100%, 300px);
-    min-height: 54px;
-    font-size: 0.5rem;
-    padding: 8px 9px;
+    width: min(100%, 260px);
+    min-height: 48px;
+    font-size: 0.44rem;
+    padding: 6px 8px;
   }
 
   .charge-meter {
