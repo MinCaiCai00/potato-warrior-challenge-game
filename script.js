@@ -1,4 +1,4 @@
-﻿const bosses = [
+const bosses = [
   {
     name: "拖延泥沼怪",
     difficulty: "★",
@@ -371,9 +371,9 @@ function applyUiStrings() {
   els.nextStageBtn.textContent = copy.stageClear.next;
   els.nextStageBtn.setAttribute("aria-label", copy.stageClear.nextAria);
 
-  els.victoryKicker.textContent = copy.victory.kicker;
+  if (els.victoryKicker) els.victoryKicker.textContent = copy.victory.kicker;
   els.victoryTitle.textContent = copy.victory.title;
-  els.victoryIntro.textContent = copy.victory.intro;
+  if (els.victoryIntro) els.victoryIntro.textContent = copy.victory.intro;
   els.victoryRescueStage.setAttribute("aria-label", copy.victory.rescueStageAria);
   els.victoryPrincess.setAttribute("aria-label", copy.victory.princessAria);
   els.victoryRewardLine.textContent = copy.victory.rewardMedal;
