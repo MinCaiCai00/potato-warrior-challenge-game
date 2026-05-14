@@ -176,7 +176,22 @@ button {
 }
 
 .home-runner.running {
-  animation: none;
+  animation: runnerBob 0.45s infinite ease-in-out;
+}
+
+@keyframes runnerBob {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-4px) rotate(2deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-4px) rotate(-2deg);
+  }
 }
 
 .loading-bar {
