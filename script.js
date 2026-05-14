@@ -834,7 +834,11 @@ function attack(multiplier = 1) {
 }
 
 function beginCharge() {
-  if (state.paused || state.locked) return;
+  if (state.paused || state.locked || state.screen !== "battle") return;
+  if (state.power < 100) {
+    resetChargeMeter();
+    return;
+  }
 
   state.chargeStart = Date.now();
   setChargeMeter(0, copy.battle.chargeLabelCharging);
@@ -847,8 +851,13 @@ function beginCharge() {
   }, chargeTickMs);
 }
 
-function releaseCharge() {
-  if (!state.chargeStart) return;
+function releaseCharge(triggerNormalAttack = false) {
+  if (!state.chargeStart) {
+    if (triggerNormalAttack) {
+      attack(1);
+    }
+    return;
+  }
 
   const held = Date.now() - state.chargeStart;
   const chargePercent = clamp((held / fullChargeMs) * 100, 0, 100);
@@ -857,7 +866,7 @@ function releaseCharge() {
   window.clearInterval(state.chargeTimer);
   state.chargeTimer = null;
   resetChargeMeter();
-  attack(isCharged ? 2.8 : 1);
+  attack(isCharged && state.power >= 100 ? 2.8 : 1);
 }
 
 function defend() {
@@ -1101,9 +1110,9 @@ function bindChargeControl(target) {
     event.preventDefault();
     beginCharge();
   });
-  target.addEventListener("pointerup", releaseCharge);
-  target.addEventListener("pointerleave", releaseCharge);
-  target.addEventListener("pointercancel", releaseCharge);
+  target.addEventListener("pointerup", () => releaseCharge(true));
+  target.addEventListener("pointerleave", () => releaseCharge(false));
+  target.addEventListener("pointercancel", () => releaseCharge(false));
 }
 
 bindChargeControl(els.attackBtn);
