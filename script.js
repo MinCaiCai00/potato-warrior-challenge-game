@@ -372,7 +372,7 @@ function applyUiStrings() {
   els.nextStageBtn.setAttribute("aria-label", copy.stageClear.nextAria);
 
   if (els.victoryKicker) els.victoryKicker.textContent = copy.victory.kicker;
-  els.victoryTitle.textContent = copy.victory.title;
+  if (els.victoryTitle) els.victoryTitle.textContent = copy.victory.title;
   if (els.victoryIntro) els.victoryIntro.textContent = copy.victory.intro;
   els.victoryRescueStage.setAttribute("aria-label", copy.victory.rescueStageAria);
   els.victoryPrincess.setAttribute("aria-label", copy.victory.princessAria);

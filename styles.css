@@ -972,13 +972,7 @@ h1 {
   z-index: 2;
 }
 
-#victory-title {
-  font-size: clamp(1.4rem, 5vw, 2.8rem);
-  margin-bottom: 20px;
-  color: #ffe56a;
-  opacity: 0;
-  /* 初始隱藏 */
-}
+
 
 .victory-congrats {
   position: absolute;
@@ -1014,8 +1008,7 @@ h1 {
   animation: heartPop 560ms ease-out 4.85s forwards;
 }
 
-/* 新增：標題與獎勵看板的延遲淡入動畫 */
-.victory-screen.scene-play #victory-title,
+/* 新增：獎勵看板的延遲淡入動畫 */
 .victory-screen.scene-play .reward-board {
   animation: victoryUIFadeIn 1.5s ease-out 6.5s forwards;
 }
