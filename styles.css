@@ -909,6 +909,7 @@ h1 {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; /* 新增：讓內容在畫面上垂直置中 */
   gap: clamp(12px, 3vw, 20px);
   padding: clamp(16px, 4vw, 28px);
   min-height: 100vh;
@@ -926,17 +927,25 @@ h1 {
 .rescue-stage {
   position: fixed;
   inset: 0;
-  z-index: 1;
+  z-index: 1; /* 位於最底層 */
   width: 100%;
   min-height: 100vh;
   min-height: 100svh;
   margin: 0;
   padding: 0;
   border: 0;
-  background: rgba(0, 0, 0, 0);
-  /* 初始透明 */
+  background: transparent;
   pointer-events: none;
   overflow: hidden;
+}
+
+/* 新增：獨立遮罩層樣式 */
+.victory-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 3; /* 位於角色 (z:2) 之上，看板 (z:4) 之下 */
+  background: rgba(0, 0, 0, 0);
+  pointer-events: none;
 }
 
 @keyframes maskFadeIn {
@@ -953,7 +962,7 @@ h1 {
   position: absolute;
   left: 50%;
   bottom: 4px;
-  width: min(34%, 240px);
+  width: min(26%, 180px); /* 縮小尺寸 */
   aspect-ratio: 5 / 6;
   height: auto;
   transform: translateX(-230%);
@@ -964,7 +973,7 @@ h1 {
   position: absolute;
   left: 50%;
   bottom: 4px;
-  width: min(34%, 240px);
+  width: min(26%, 180px); /* 縮小尺寸 */
   aspect-ratio: 5 / 6;
   height: auto;
   background-image: url("assets/pictures/princess.png");
@@ -987,7 +996,7 @@ h1 {
   text-shadow: 4px 4px 0 #000;
   white-space: nowrap;
   opacity: 0;
-  z-index: 4;
+  z-index: 5; /* 位於最頂層 */
 }
 
 .victory-screen.scene-play .victory-player {
@@ -1003,7 +1012,7 @@ h1 {
 }
 
 /* 新增：遮罩背景同步淡入 */
-.victory-screen.scene-play .rescue-stage {
+.victory-screen.scene-play .victory-mask {
   animation: maskFadeIn 2.0s ease-out 6.5s forwards;
 }
 
@@ -1045,12 +1054,13 @@ h1 {
   background: #f4e6c2;
   color: #2f2300;
   text-shadow: none;
-  padding: clamp(16px, 3vw, 24px);
-  width: min(600px, 94%);
+  padding: clamp(32px, 6vw, 54px) clamp(16px, 3vw, 24px); /* 增加上下 padding 以拉長高度 */
+  width: min(400px, 94%); /* 寬度從 600px 縮短 */
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 3px #ddc791;
   border-radius: 4px;
   opacity: 0;
   /* 初始隱藏 */
+  z-index: 4; /* 位於遮罩之上 */
 }
 
 #victory-reward-line {
@@ -1058,6 +1068,8 @@ h1 {
   font-size: clamp(0.9rem, 2.5vw, 1.4rem);
   display: block;
   margin-bottom: 8px;
+  color: #d19600; /* 同步星星顏色 */
+  text-shadow: 2px 2px 0 #000; /* 同步星星陰影 */
 }
 
 .victory-stars {
@@ -1073,7 +1085,7 @@ h1 {
   justify-content: center;
   gap: 16px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 34px; /* 增加間距，讓按鈕位置更靠下 */
 }
 
 .modal-actions {
@@ -1469,7 +1481,7 @@ body.paused .battle-screen .boss {
   }
 
   100% {
-    transform: translateX(-72%);
+    transform: translateX(-100%); /* 從 -72% 改為 -100%，往左移更多 */
   }
 }
 
