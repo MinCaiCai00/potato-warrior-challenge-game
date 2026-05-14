@@ -396,7 +396,8 @@ h1 {
     var(--stage-bg-image);
   background-position: center center, center center, center var(--stage-bg-y, 50%);
   background-repeat: repeat, no-repeat, no-repeat;
-  background-size: auto, 100% 100%, contain;
+  background-size: auto, 100% 100%, cover;
+  background-color: #060f2a;
 }
 
 .battle-screen.screen-shake {
@@ -846,7 +847,7 @@ h1 {
   place-items: center;
   padding: clamp(16px, 4vw, 40px);
   background-image: url("assets/pictures/background/part_victory.jpg");
-  background-color: #0c1328;
+  background-color: #060f2a;
   background-repeat: no-repeat;
   background-position: center center;
   background-size: auto 100%;
@@ -896,6 +897,7 @@ h1 {
   position: relative;
   overflow: hidden;
   background-image: url("assets/pictures/background/perfect_victory_bg.jpg");
+  background-color: #060f2a;
 }
 
 .victory-scene {
