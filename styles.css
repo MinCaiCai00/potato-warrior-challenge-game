@@ -1067,6 +1067,7 @@ h1 {
 .victory-stars {
   margin-top: 4px;
   margin-bottom: 20px;
+  text-align: center;
   color: #d19600;
   font-size: clamp(1rem, 3vw, 1.6rem);
 }
