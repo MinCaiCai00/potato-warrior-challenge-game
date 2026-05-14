@@ -941,20 +941,20 @@ h1 {
 
 /* 新增：獨立遮罩層樣式 */
 .victory-mask {
-  position: fixed;
+  position: absolute;
   inset: 0;
-  z-index: 3; /* 位於角色 (z:2) 之上，看板 (z:4) 之下 */
-  background: rgba(0, 0, 0, 0);
+  z-index: 3; /* 確保在角色 z:2 之上 */
+  background: rgba(0, 0, 0, 0.78); /* 直接設定最終的深黑色 */
   pointer-events: none;
+  opacity: 0; /* 初始完全透明 */
 }
 
-@keyframes maskFadeIn {
+@keyframes maskFadeInOpacity {
   from {
-    background: rgba(0, 0, 0, 0);
+    opacity: 0;
   }
-
   to {
-    background: rgba(0, 0, 0, 0.78);
+    opacity: 1;
   }
 }
 
@@ -1011,9 +1011,9 @@ h1 {
   animation: congratsPop 880ms cubic-bezier(0.14, 1.17, 0.26, 1) 4.7s forwards;
 }
 
-/* 新增：遮罩背景同步淡入 */
+/* 新增：遮罩背景同步淡入 (改用透明度動畫) */
 .victory-screen.scene-play .victory-mask {
-  animation: maskFadeIn 2.0s ease-out 6.5s forwards;
+  animation: maskFadeInOpacity 2.0s ease-out 6.5s forwards;
 }
 
 .victory-screen.scene-play .victory-heart {

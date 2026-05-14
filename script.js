@@ -193,6 +193,7 @@ const copy = {
       resume: "▶",
       home: "⌂"
     },
+
     badgeRowAria: "關卡徽章",
     playerHpLabel: "土豆勇者生命值",
     powerLabel: "能量",
@@ -947,7 +948,9 @@ function stageWin() {
   if (isFinal) {
     state.stage = bosses.length;
     createBadges();
-    showVictoryScreen();
+    state.resultTransitionTimer = window.setTimeout(() => {
+      showVictoryScreen();
+    }, 2000); /* 增加 2 秒緩衝，讓玩家看到魔王倒下 */
     return;
   }
 
