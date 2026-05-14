@@ -1649,3 +1649,219 @@ body.paused .battle-screen .boss {
     --ib-vw: 82vw;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   手機橫向模式（Landscape）— 修正攻擊/防禦按鈕消失問題
+   ═══════════════════════════════════════════════════════ */
+@media (max-height: 520px) and (orientation: landscape) {
+
+  /* ── 戰鬥畫面整體：減少 padding，讓空間給角色與按鈕 ── */
+  .battle-screen {
+    gap: 4px;
+    padding: 6px 8px;
+    padding-bottom: 6px;
+    /* 切換為可滾動但優先壓縮，不讓內容溢出 */
+    overflow: hidden;
+  }
+
+  /* ── 頂部按鈕縮小，避免佔用寶貴高度 ── */
+  .top-actions {
+    top: 4px;
+    right: 6px;
+    gap: 4px;
+  }
+
+  .icon-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 0.7rem;
+    box-shadow: 0 2px 0 #8c7749;
+  }
+
+  /* ── 舞台 header：極度壓縮，只保留最小內容 ── */
+  .stage-header {
+    flex-direction: row;
+    align-items: center;
+    padding-right: 100px;
+    gap: 6px;
+    min-height: 0;
+  }
+
+  .stage-label {
+    font-size: 0.38rem;
+    line-height: 1;
+  }
+
+  .stage-header h2 {
+    font-size: clamp(0.6rem, 2.5vw, 0.85rem);
+    line-height: 1.1;
+  }
+
+  .badge {
+    width: 14px;
+    height: 14px;
+    font-size: 0.38rem;
+  }
+
+  /* ── Arena：改為橫向分割，把按鈕安排進左半 ── */
+  .arena {
+    grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+    gap: 4px;
+    min-height: 0;
+    height: auto;
+    flex: 1;
+    /* 讓 arena 填滿剩餘垂直空間 */
+    align-items: stretch;
+  }
+
+  /* ── 卡片：改成 header + 角色 + 按鈕 三列緊湊佈局 ── */
+  .player-card {
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 3px;
+  }
+
+  .boss-card {
+    grid-template-rows: auto auto minmax(0, 1fr) auto;
+    gap: 3px;
+  }
+
+  .fighter {
+    gap: 3px;
+    padding: 2px;
+  }
+
+  /* ── 角色區域：縮小 ── */
+  .character-wrap {
+    min-height: 0;
+    height: 100%;
+    padding: 0 2px 6px;
+  }
+
+  .sprite {
+    max-width: min(100%, clamp(72px, 18vh, 140px));
+  }
+
+  /* ── 血量條縮小 ── */
+  .stat-block {
+    padding: 4px 6px 2px;
+  }
+
+  .stat-line {
+    font-size: 0.38rem;
+    gap: 3px;
+  }
+
+  .bar {
+    height: 9px;
+    border-width: 2px;
+    margin: 2px 0 4px;
+  }
+
+  /* ── Boss 描述泡泡縮小 ── */
+  .battle-line-bubble {
+    min-height: 40px;
+    padding: 6px 8px;
+    font-size: 0.42rem;
+    line-height: 1.4;
+  }
+
+  .boss-desc {
+    font-size: 0.38rem;
+    padding: 5px 6px;
+    line-height: 1.4;
+  }
+
+  /* ── 中間蓄力按鈕縮小 ── */
+  .versus {
+    padding-bottom: clamp(8px, 2svh, 16px);
+  }
+
+  .charge-meter {
+    width: 54px;
+    padding: 3px;
+  }
+
+  .charge-percent {
+    font-size: 0.42rem;
+  }
+
+  .charge-label {
+    font-size: 0.28rem;
+  }
+
+  /* ── 攻擊 / 防禦按鈕：確保可見並可點擊 ── */
+  .control-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .action-btn {
+    min-height: 28px;
+    padding: 4px 4px;
+    font-size: 0.42rem;
+    line-height: 1.1;
+    box-shadow: 0 3px 0 var(--danger-shadow);
+  }
+
+  .defend-btn {
+    box-shadow: 0 3px 0 var(--def-shadow);
+  }
+
+  /* ── 地板縮小 ── */
+  .ground {
+    height: 36px;
+  }
+}
+
+/* 更矮的裝置（如 iPhone SE 橫向：375×667 → 景觀 667×375）特別處理 */
+@media (max-height: 400px) and (orientation: landscape) {
+  .battle-screen {
+    gap: 2px;
+    padding: 4px 6px;
+  }
+
+  .stage-header {
+    padding-right: 90px;
+  }
+
+  .stage-header h2 {
+    font-size: 0.55rem;
+  }
+
+  .arena {
+    grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
+    gap: 3px;
+  }
+
+  .character-wrap {
+    padding-bottom: 4px;
+  }
+
+  .sprite {
+    max-width: min(100%, clamp(56px, 16vh, 110px));
+  }
+
+  .action-btn {
+    min-height: 24px;
+    font-size: 0.38rem;
+    padding: 3px 3px;
+  }
+
+  .charge-meter {
+    width: 46px;
+    padding: 2px;
+  }
+
+  .ground {
+    height: 28px;
+  }
+
+  .icon-btn {
+    width: 26px;
+    height: 26px;
+    font-size: 0.62rem;
+  }
+}
