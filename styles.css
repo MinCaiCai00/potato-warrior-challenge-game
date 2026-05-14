@@ -654,6 +654,9 @@ h1 {
   background-repeat: no-repeat;
   background-position: center bottom;
   background-size: contain;
+  /* 新增：外圍陰影與魔王色彩發光感 */
+  filter: drop-shadow(0 10px 10px rgba(0, 0, 0, 0.6)) drop-shadow(0 0 15px var(--boss-color));
+  transition: filter 0.3s ease;
 }
 
 .battle-screen .player,
@@ -680,15 +683,15 @@ h1 {
 
 .boss.kind-dragon,
 .boss.kind-lightning {
-  width: min(100%, clamp(168px, 22vw, 290px));
+  width: min(100%, clamp(200px, 28vw, 380px));
 }
 
 .boss.kind-mirror {
-  width: min(100%, clamp(240px, 32vw, 420px));
+  width: min(100%, clamp(280px, 40vw, 540px));
 }
 
 .boss.kind-sludge {
-  width: min(100%, clamp(180px, 25vw, 330px));
+  width: min(100%, clamp(220px, 32vw, 440px));
 }
 
 .hit-text {
@@ -741,9 +744,9 @@ h1 {
 .battle-line-bubble {
   display: block;
   visibility: hidden;
-  align-self: start;
-  width: min(100%, 420px);
-  min-height: 60px;
+  width: 70%;
+  max-width: 220px;
+  min-height: 48px;
   border: 3px solid #101010;
   border-radius: 14px;
   background: rgba(16, 24, 46, 0.92);
