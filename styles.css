@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --bg-dark: #141426;
   --bg-mid: #22224a;
   --bg-light: #3d65b5;
@@ -98,6 +98,27 @@ button {
 
 .home-screen.loading::before {
   background: rgba(0, 0, 0, 0.72);
+}
+
+.orientation-hint {
+  display: none;
+  position: absolute;
+  top: 43vh;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 460px);
+  padding: 40px 14px;
+  border: 3px solid #101010;
+  border-radius: 12px;
+  background: rgba(12, 21, 46, 0.92);
+  color: #f8f1d4;
+  text-shadow: 1px 1px 0 #000;
+  text-align: center;
+  font-size: clamp(0.52rem, 2.2vw, 0.72rem);
+  line-height: 1.45;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.38);
+  z-index: 12;
+  pointer-events: none;
 }
 
 .loading-panel {
@@ -532,7 +553,7 @@ h1 {
   display: flex;
   flex-direction: row;
   align-items: flex-end;
-  gap: clamp(8px, 2vw, 15px);
+  gap: clamp(2px, 1.1vw, 8px);
   width: 100%;
   height: 100%;
 }
@@ -735,9 +756,20 @@ h1 {
 .control-row {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: clamp(6px, 2vw, 15px);
+  gap: clamp(10px, 2vw, 16px);
+  margin-bottom: clamp(2px, 0.8vw, 6px);
   flex-shrink: 0;
+}
+
+.action-btn {
+  width: clamp(56px, 7.2vw, 82px);
+  aspect-ratio: 1 / 1;
+  min-height: 0;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .attack-btn {
@@ -1613,14 +1645,15 @@ body.paused .battle-screen .boss {
   .control-row {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
     padding: 5px;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
   }
 
   .action-btn {
-    min-height: 34px;
-    padding: 6px 6px;
+    width: clamp(46px, 9vw, 62px);
+    min-height: 0;
+    padding: 0;
     font-size: 0.58rem;
   }
 
@@ -1673,6 +1706,12 @@ body.paused .battle-screen .boss {
   .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="home"] {
     --ib-max: 150px;
     --ib-vw: 78vw;
+  }
+}
+
+@media (hover: none) and (pointer: coarse) and (orientation: portrait) {
+  .orientation-hint {
+    display: block;
   }
 }
 
@@ -1763,14 +1802,15 @@ body.paused .battle-screen .boss {
   .control-row {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     padding: 4px;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
   }
 
   .action-btn {
-    min-height: 28px;
-    padding: 3px 6px;
+    width: clamp(40px, 11vw, 52px);
+    min-height: 0;
+    padding: 0;
     font-size: 0.4rem;
   }
 
