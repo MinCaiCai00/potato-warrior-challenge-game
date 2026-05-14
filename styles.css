@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --bg-dark: #141426;
   --bg-mid: #22224a;
   --bg-light: #3d65b5;
@@ -57,10 +57,8 @@ button {
   position: relative;
 }
 
-/* 統一背景容器的基礎樣式 */
 .home-screen,
 .battle-screen,
-.stage-clear-screen,
 .victory-screen,
 .modal.game-over-fullscreen {
   background-position: center center;
@@ -71,7 +69,7 @@ button {
 
 .home-screen {
   background-image: url("assets/pictures/background/home_bg.jpg");
-  background-size: cover;
+  background-size: auto 100%;
   background-color: #060f2a;
   background-attachment: scroll;
   overflow: hidden;
@@ -254,8 +252,8 @@ h1 {
 }
 
 .image-btn {
-  --ib-max: 280px;
-  --ib-vw: 76vw;
+  --ib-max: 200px;
+  --ib-vw: 60vw;
   /* --image-btn-fill: #64ffd8; */
   width: min(var(--ib-max), var(--ib-vw));
   aspect-ratio: 2.66;
@@ -283,18 +281,21 @@ h1 {
   background-color: var(--image-btn-fill);
   background-position: center;
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 100%;
 }
 
 #start-btn.image-btn {
-  --ib-max: 250px;
+  --ib-max: 150px;
   --ib-vw: 70vw;
+  margin-bottom: 41px;
 }
 
 .stage-clear-card #next-stage-btn.image-btn {
-  --ib-max: 248px;
-  --ib-vw: 72vw;
+  --ib-max: 180px;
+  --ib-vw: 50vw;
   background-image: url("assets/pictures/buttons/next_level.png");
+  margin-top: 15px;
+  justify-self: center;
 }
 
 #victory-restart-btn.image-btn {
@@ -786,14 +787,16 @@ h1 {
 }
 
 .stage-clear-card {
-  width: min(860px, 100%);
+  width: min(860px, 30%);
   text-align: center;
   border: 4px solid #8bb6ff;
+  position: absolute;
+  bottom: 10%;
   background: rgba(10, 16, 40, 0.86);
   box-shadow: 0 0 0 4px #1e2f66, 0 14px 0 rgba(0, 0, 0, 0.35);
   padding: clamp(18px, 4vw, 36px);
   display: grid;
-  gap: 14px;
+  gap: 5px;
   opacity: 0;
   transform: translateY(20px) scale(0.97);
   transition:
@@ -806,9 +809,9 @@ h1 {
   transform: translateY(0) scale(1);
 }
 
-.stage-clear-card .primary-btn {
+.stage-clear-card #next-stage-btn {
   justify-self: center;
-  min-width: min(280px, 100%);
+  min-width: min(100px, 80%);
 }
 
 .victory-screen {
@@ -831,7 +834,7 @@ h1 {
   background: transparent;
 }
 
-.victory-scene > *:not(.rescue-stage) {
+.victory-scene>*:not(.rescue-stage) {
   position: relative;
   z-index: 2;
   max-width: min(520px, 100%);
@@ -1002,6 +1005,7 @@ h1 {
   background: #1f3164;
   box-shadow: inset 0 0 0 3px #86aefb, 0 10px 0 rgba(0, 0, 0, 0.3);
   padding: 16px;
+  text-align: center;
   opacity: 0;
   transform: translateY(18px) scale(0.97);
   transition:
@@ -1092,9 +1096,7 @@ h1 {
 .attack-effect.has-art.charged span {
   transform: scale(1.24);
   filter:
-    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45))
-    drop-shadow(0 0 7px rgba(255, 236, 125, 0.95))
-    drop-shadow(0 0 16px rgba(112, 220, 255, 0.82));
+    drop-shadow(0 2px 0 rgba(0, 0, 0, 0.45)) drop-shadow(0 0 7px rgba(255, 236, 125, 0.95)) drop-shadow(0 0 16px rgba(112, 220, 255, 0.82));
 }
 
 .attack-effect.player-wave:not(.has-art) span {
@@ -1129,9 +1131,19 @@ body.paused .battle-screen .boss {
 }
 
 @keyframes popDamage {
-  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
-  20% { opacity: 1; }
-  100% { opacity: 0; transform: translateY(-34px) scale(1.05); }
+  0% {
+    opacity: 0;
+    transform: translateY(10px) scale(0.8);
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-34px) scale(1.05);
+  }
 }
 
 @keyframes projectileFly {
@@ -1139,11 +1151,16 @@ body.paused .battle-screen .boss {
     opacity: 0;
     transform: translate(-50%, -50%) rotate(var(--angle)) scale(0.72);
   }
-  15% { opacity: 1; }
+
+  15% {
+    opacity: 1;
+  }
+
   76% {
     opacity: 1;
     transform: translate(-50%, -50%) translate(var(--mid-dx), var(--mid-dy)) rotate(var(--angle)) scale(1.02);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) rotate(var(--angle)) scale(0.6);
@@ -1155,11 +1172,16 @@ body.paused .battle-screen .boss {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.72);
   }
-  15% { opacity: 1; }
+
+  15% {
+    opacity: 1;
+  }
+
   76% {
     opacity: 1;
     transform: translate(-50%, -50%) translate(var(--mid-dx), var(--mid-dy)) scale(1.02);
   }
+
   100% {
     opacity: 0;
     transform: translate(-50%, -50%) translate(var(--dx), var(--dy)) scale(0.6);
@@ -1167,33 +1189,87 @@ body.paused .battle-screen .boss {
 }
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-6px); }
-  75% { transform: translateX(6px); }
+
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  25% {
+    transform: translateX(-6px);
+  }
+
+  75% {
+    transform: translateX(6px);
+  }
 }
 
 @keyframes idleSway {
-  0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
-  25% { transform: translateX(-2px) translateY(-3px) rotate(-0.6deg); }
-  50% { transform: translateX(2px) translateY(-6px) rotate(0.8deg); }
-  75% { transform: translateX(-1px) translateY(-2px) rotate(-0.4deg); }
+
+  0%,
+  100% {
+    transform: translateX(0) translateY(0) rotate(0deg);
+  }
+
+  25% {
+    transform: translateX(-2px) translateY(-3px) rotate(-0.6deg);
+  }
+
+  50% {
+    transform: translateX(2px) translateY(-6px) rotate(0.8deg);
+  }
+
+  75% {
+    transform: translateX(-1px) translateY(-2px) rotate(-0.4deg);
+  }
 }
 
 @keyframes screenShake {
-  0% { transform: translate(0, 0); }
-  25% { transform: translate(-4px, 1px); }
-  50% { transform: translate(4px, -2px); }
-  75% { transform: translate(-3px, 1px); }
-  100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  25% {
+    transform: translate(-4px, 1px);
+  }
+
+  50% {
+    transform: translate(4px, -2px);
+  }
+
+  75% {
+    transform: translate(-3px, 1px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 @keyframes screenShakeStrong {
-  0% { transform: translate(0, 0); }
-  20% { transform: translate(-7px, 2px); }
-  40% { transform: translate(7px, -3px); }
-  60% { transform: translate(-6px, 2px); }
-  80% { transform: translate(4px, -2px); }
-  100% { transform: translate(0, 0); }
+  0% {
+    transform: translate(0, 0);
+  }
+
+  20% {
+    transform: translate(-7px, 2px);
+  }
+
+  40% {
+    transform: translate(7px, -3px);
+  }
+
+  60% {
+    transform: translate(-6px, 2px);
+  }
+
+  80% {
+    transform: translate(4px, -2px);
+  }
+
+  100% {
+    transform: translate(0, 0);
+  }
 }
 
 @keyframes battleLineRise {
@@ -1201,14 +1277,17 @@ body.paused .battle-screen .boss {
     opacity: 0;
     transform: translateY(14px) scale(0.92);
   }
+
   20% {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
+
   74% {
     opacity: 1;
     transform: translateY(-1px) scale(1);
   }
+
   100% {
     opacity: 0;
     transform: translateY(-12px) scale(0.98);
@@ -1216,18 +1295,33 @@ body.paused .battle-screen .boss {
 }
 
 @keyframes runAcross {
-  from { left: var(--runner-pad); }
-  to { left: calc(100% - var(--runner-size) - var(--runner-pad)); }
+  from {
+    left: var(--runner-pad);
+  }
+
+  to {
+    left: calc(100% - var(--runner-size) - var(--runner-pad));
+  }
 }
 
 @keyframes heroEnter {
-  0% { transform: translateX(-230%); }
-  100% { transform: translateX(-72%); }
+  0% {
+    transform: translateX(-230%);
+  }
+
+  100% {
+    transform: translateX(-72%);
+  }
 }
 
 @keyframes princessEnter {
-  0% { transform: translateX(230%); }
-  100% { transform: translateX(-2%); }
+  0% {
+    transform: translateX(230%);
+  }
+
+  100% {
+    transform: translateX(-2%);
+  }
 }
 
 @keyframes congratsPop {
@@ -1235,10 +1329,12 @@ body.paused .battle-screen .boss {
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.5);
   }
+
   60% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1.13);
   }
+
   100% {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
@@ -1250,6 +1346,7 @@ body.paused .battle-screen .boss {
     opacity: 0;
     transform: translateX(-50%) scale(0.3);
   }
+
   100% {
     opacity: 1;
     transform: translateX(-50%) scale(1);
@@ -1367,12 +1464,12 @@ body.paused .battle-screen .boss {
   }
 
   .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="continue"] {
-    --ib-max: 148px;
+    --ib-max: 120px;
     --ib-vw: 32vw;
   }
 
   .modal:not(.game-over-fullscreen):not(.final-overlay) .modal-actions .image-btn[data-btn-action="home"] {
-    --ib-max: 132px;
+    --ib-max: 115px;
     --ib-vw: 28vw;
   }
 

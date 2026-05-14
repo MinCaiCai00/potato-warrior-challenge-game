@@ -120,7 +120,7 @@ const bossImageByKind = {
   dragon: "assets/pictures/exhaustion.png",
   cloud: "assets/pictures/pessimism.png",
   lightning: "assets/pictures/anxiety.png",
-  mirror: "assets/pictures/self_doubt.png"
+  mirror: "assets/pictures/self_doubt_1.png"
 };
 
 const attackEffectImageByFx = {
@@ -238,13 +238,13 @@ const copy = {
     rewardLine: uiRewardMedalLine
   },
   gameOver: {
-    message: "土豆勇者倒下了，調整節奏後再挑戰一次吧。",
+    message: "土豆勇者倒下了，調整節奏後再挑戰一次吧！",
     restart: "重新遊戲",
     home: "回到首頁"
   },
   pause: {
     title: "遊戲暫停",
-    message: "戰鬥已暫停。準備好後繼續迎戰 Boss。",
+    message: "戰鬥已暫停，準備好後繼續迎戰 Boss！",
     continue: "繼續遊戲",
     home: "回到首頁"
   }
