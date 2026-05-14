@@ -281,6 +281,7 @@ const state = {
 };
 
 const els = {
+  gameShell: document.querySelector(".game-shell"),
   homeScreen: document.querySelector("#home-screen"),
   battleScreen: document.querySelector("#battle-screen"),
   stageClearScreen: document.querySelector("#stage-clear-screen"),
@@ -304,6 +305,7 @@ const els = {
   loadingText: document.querySelector("#loading-text"),
   bgm: document.querySelector("#bgm"),
   startBtn: document.querySelector("#start-btn"),
+  closeGameBtn: document.querySelector("#close-game-btn"),
   musicBtn: document.querySelector("#music-btn"),
   pauseBtn: document.querySelector("#pause-btn"),
   homeBtn: document.querySelector("#home-btn"),
@@ -348,6 +350,11 @@ function applyUiStrings() {
   els.loadingBar?.setAttribute("aria-label", copy.home.loadingBarAria);
   els.startBtn.textContent = copy.home.start;
   els.startBtn.setAttribute("aria-label", copy.home.startAria);
+  els.closeGameBtn?.setAttribute("aria-label", "關閉遊戲");
+  if (els.closeGameBtn) {
+    els.closeGameBtn.title = "關閉遊戲";
+    els.closeGameBtn.textContent = "關閉遊戲";
+  }
 
   els.musicBtn.textContent = copy.battle.icons.musicOn;
   els.musicBtn.setAttribute("title", copy.battle.musicTitle);
@@ -1086,6 +1093,24 @@ function goHome() {
   updateActionAvailability();
 }
 
+function closeGameScreen() {
+  clearTimers();
+  clearTransitionTimers();
+  stopMusic();
+  hideStageClearScreen();
+  hideModal();
+  state.paused = false;
+  state.locked = true;
+  state.playerTurn = false;
+  document.body.classList.remove("paused");
+
+  if (els.gameShell) {
+    els.gameShell.classList.add("hidden");
+  }
+
+  window.close();
+}
+
 function showModal({ type, title, message, actions, popupDelayMs = 0, musicTrackOnPopup = "" }) {
   clearTransitionTimers();
   els.modalTitle.textContent = title || copy.modal.defaultTitle;
@@ -1140,6 +1165,7 @@ function hideModal() {
 }
 
 els.startBtn.addEventListener("click", startGame);
+els.closeGameBtn?.addEventListener("click", closeGameScreen);
 els.musicBtn.addEventListener("click", toggleMusic);
 els.homeBtn.addEventListener("click", goHome);
 els.pauseBtn.addEventListener("click", togglePause);

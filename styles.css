@@ -337,10 +337,10 @@ h1 {
   background-size: 100%;
 }
 
-#start-btn.image-btn {
+#start-btn.image-btn,
+#close-game-btn.image-btn {
   --ib-max: 150px;
   --ib-vw: 70vw;
-  margin-bottom: 41px;
 }
 
 #next-stage-btn.image-btn {
@@ -400,6 +400,10 @@ h1 {
 
 .image-btn[data-btn-action="start"] {
   background-image: url("assets/pictures/buttons/start_game.png");
+}
+
+.image-btn[data-btn-action="close"] {
+  background-image: url("assets/pictures/buttons/close_game.png");
 }
 
 .image-btn[data-btn-action="restart"] {
