@@ -273,7 +273,8 @@ const state = {
   stageClearRevealTimer: null,
   musicEnabled: true,
   homeReady: false,
-  currentTrack: ""
+  currentTrack: "",
+  playerTurn: true
 };
 
 const els = {
@@ -668,6 +669,7 @@ function startGame() {
   state.power = 35;
   state.paused = false;
   state.locked = false;
+  state.playerTurn = true;
   document.body.classList.remove("paused");
   hideStageClearScreen();
   hideModal();
@@ -685,6 +687,7 @@ function loadStage() {
   state.bossHp = boss.hp;
   state.defending = false;
   state.locked = false;
+  state.playerTurn = true;
   state.chargeStart = 0;
   els.battleScreen.style.setProperty("--stage-bg-image", `url("${stageBackground}")`);
   els.battleScreen.style.setProperty("--stage-bg-y", state.stage === 0 ? "58%" : "50%");
@@ -705,6 +708,7 @@ function loadStage() {
   resetChargeMeter();
   startTimers();
   startBattleLineLoop();
+  updateActionAvailability();
 }
 
 function startTimers() {
@@ -715,8 +719,6 @@ function startTimers() {
     state.power = clamp(state.power + 5, 0, 100);
     updateBars();
   }, 1000);
-
-  scheduleBossAttack();
 }
 
 function clearTimers() {
@@ -745,17 +747,17 @@ function clearTransitionTimers() {
 function scheduleBossAttack() {
   window.clearTimeout(state.bossTimer);
 
-  const ease = stageEaseProfile();
-  const stageFactor = state.stage * 80;
-  const delay = Math.max(1200, 2200 - stageFactor + ease.attackDelayBonus + Math.random() * 780);
-
-  state.bossTimer = window.setTimeout(() => {
-    bossAttack();
-
-    if (!state.locked && state.screen === "battle") {
-      scheduleBossAttack();
+  const delay = 760 + Math.random() * 320;
+  const runAttack = () => {
+    if (state.locked || state.screen !== "battle") return;
+    if (state.paused) {
+      state.bossTimer = window.setTimeout(runAttack, 180);
+      return;
     }
-  }, delay);
+    bossAttack();
+  };
+
+  state.bossTimer = window.setTimeout(runAttack, delay);
 }
 
 function bossAttack() {
@@ -788,7 +790,9 @@ function bossAttack() {
 
   state.defending = false;
   els.player.classList.remove("guard");
+  state.playerTurn = true;
   updateBars();
+  updateActionAvailability();
 
   if (state.playerHp <= 0) {
     state.locked = true;
@@ -798,7 +802,7 @@ function bossAttack() {
 }
 
 function attack(multiplier = 1) {
-  if (state.paused || state.locked || state.screen !== "battle") return;
+  if (state.paused || state.locked || state.screen !== "battle" || !state.playerTurn) return;
 
   const ease = stageEaseProfile();
   const base = 16 + state.stage * 2;
@@ -810,6 +814,7 @@ function attack(multiplier = 1) {
   state.bossHp = clamp(state.bossHp - damage, 0, currentBoss().hp);
   state.power = 0;
   state.defending = false;
+  state.playerTurn = false;
   els.player.classList.remove("guard");
 
   launchAttackEffect({
@@ -826,12 +831,16 @@ function attack(multiplier = 1) {
   });
 
   updateBars();
+  updateActionAvailability();
 
   if (state.bossHp <= 0) {
     state.locked = true;
     clearTimers();
     window.setTimeout(stageWin, 430);
+    return;
   }
+
+  scheduleBossAttack();
 }
 
 function beginCharge() {
@@ -887,6 +896,24 @@ function defend() {
     els.player.classList.remove("guard");
     resetChargeMeter();
   }, 1500);
+}
+
+function updateActionAvailability() {
+  const inBattle = state.screen === "battle";
+  const canAttack = inBattle && !state.paused && !state.locked && state.playerTurn;
+  const canDefend = inBattle && !state.paused && !state.locked;
+
+  if (els.attackBtn) {
+    els.attackBtn.disabled = !canAttack;
+  }
+
+  if (els.chargeMeter) {
+    els.chargeMeter.disabled = !canAttack;
+  }
+
+  if (els.defendBtn) {
+    els.defendBtn.disabled = !canDefend;
+  }
 }
 
 function updateBars() {
@@ -1028,6 +1055,7 @@ function togglePause() {
   } else {
     hideModal();
   }
+  updateActionAvailability();
 }
 
 function goHome() {
@@ -1036,12 +1064,14 @@ function goHome() {
   stopMusic();
   state.paused = false;
   state.locked = false;
+  state.playerTurn = true;
   state.chargeStart = 0;
   els.pauseBtn.textContent = copy.battle.icons.pause;
   document.body.classList.remove("paused");
   hideStageClearScreen();
   hideModal();
   setScreen("home");
+  updateActionAvailability();
 }
 
 function showModal({ type, title, message, actions, popupDelayMs = 0, musicTrackOnPopup = "" }) {
@@ -1146,6 +1176,7 @@ applyUiStrings();
 startHomeIntro();
 updateMusicButton();
 resetChargeMeter();
+updateActionAvailability();
 
 document.addEventListener("click", (event) => {
   const button = event.target instanceof Element ? event.target.closest("button") : null;
