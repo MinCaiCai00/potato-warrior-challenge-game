@@ -930,9 +930,20 @@ h1 {
   margin: 0;
   padding: 0;
   border: 0;
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(0, 0, 0, 0);
+  /* 初始透明 */
   pointer-events: none;
   overflow: hidden;
+}
+
+@keyframes maskFadeIn {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+
+  to {
+    background: rgba(0, 0, 0, 0.78);
+  }
 }
 
 .victory-player {
@@ -965,6 +976,8 @@ h1 {
   font-size: clamp(1.4rem, 5vw, 2.8rem);
   margin-bottom: 20px;
   color: #ffe56a;
+  opacity: 0;
+  /* 初始隱藏 */
 }
 
 .victory-congrats {
@@ -992,8 +1005,31 @@ h1 {
   animation: congratsPop 880ms cubic-bezier(0.14, 1.17, 0.26, 1) 4.7s forwards;
 }
 
+/* 新增：遮罩背景同步淡入 */
+.victory-screen.scene-play .rescue-stage {
+  animation: maskFadeIn 2.0s ease-out 6.5s forwards;
+}
+
 .victory-screen.scene-play .victory-heart {
   animation: heartPop 560ms ease-out 4.85s forwards;
+}
+
+/* 新增：標題與獎勵看板的延遲淡入動畫 */
+.victory-screen.scene-play #victory-title,
+.victory-screen.scene-play .reward-board {
+  animation: victoryUIFadeIn 1.5s ease-out 6.5s forwards;
+}
+
+@keyframes victoryUIFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .victory-heart {
@@ -1017,9 +1053,12 @@ h1 {
   width: min(600px, 94%);
   box-shadow: 0 12px 0 rgba(0, 0, 0, 0.25), inset 0 0 0 3px #ddc791;
   border-radius: 4px;
+  opacity: 0;
+  /* 初始隱藏 */
 }
 
 #victory-reward-line {
+  text-align: center;
   font-size: clamp(0.9rem, 2.5vw, 1.4rem);
   display: block;
   margin-bottom: 8px;
