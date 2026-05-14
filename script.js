@@ -151,6 +151,8 @@ const chargeTickMs = 50;
 const stageResultBufferMs = 850;
 const stageClearPopupDelayMs = 320;
 const gameOverPopupDelayMs = 520;
+const playerToBossBufferMs = 1300;
+const bossToPlayerBufferMs = 900;
 
 const musicTracks = {
   home: { src: "assets/bgm/flowerbed_fields.ogg", loop: true },
@@ -268,6 +270,7 @@ const state = {
   battleLineHideTimer: null,
   powerTimer: null,
   homeTimer: null,
+  turnBufferTimer: null,
   resultTransitionTimer: null,
   popupRevealTimer: null,
   stageClearRevealTimer: null,
@@ -723,12 +726,14 @@ function startTimers() {
 
 function clearTimers() {
   window.clearTimeout(state.bossTimer);
+  window.clearTimeout(state.turnBufferTimer);
   window.clearTimeout(state.battleLineTimer);
   window.clearTimeout(state.battleLineHideTimer);
   window.clearInterval(state.powerTimer);
   window.clearInterval(state.chargeTimer);
 
   state.bossTimer = null;
+  state.turnBufferTimer = null;
   state.battleLineTimer = null;
   state.battleLineHideTimer = null;
   state.powerTimer = null;
@@ -747,7 +752,7 @@ function clearTransitionTimers() {
 function scheduleBossAttack() {
   window.clearTimeout(state.bossTimer);
 
-  const delay = 760 + Math.random() * 320;
+  const delay = playerToBossBufferMs + Math.random() * 450;
   const runAttack = () => {
     if (state.locked || state.screen !== "battle") return;
     if (state.paused) {
@@ -790,15 +795,22 @@ function bossAttack() {
 
   state.defending = false;
   els.player.classList.remove("guard");
-  state.playerTurn = true;
   updateBars();
-  updateActionAvailability();
+  updateActionAvailability(); // defend remains available while waiting for player's next turn
 
   if (state.playerHp <= 0) {
     state.locked = true;
     clearTimers();
     window.setTimeout(gameOver, 430);
+    return;
   }
+
+  window.clearTimeout(state.turnBufferTimer);
+  state.turnBufferTimer = window.setTimeout(() => {
+    if (state.locked || state.screen !== "battle") return;
+    state.playerTurn = true;
+    updateActionAvailability();
+  }, bossToPlayerBufferMs);
 }
 
 function attack(multiplier = 1) {
