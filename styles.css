@@ -488,7 +488,16 @@ h1 {
 }
 
 .player-card {
-  grid-template-rows: auto minmax(160px, 1fr) auto;
+  grid-template-rows: auto 1fr;
+}
+
+.player-body {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  gap: clamp(8px, 2vw, 15px);
+  width: 100%;
+  height: 100%;
 }
 
 .boss-card {
@@ -587,6 +596,7 @@ h1 {
   align-items: flex-end;
   justify-content: center;
   align-self: end;
+  flex: 1;
   min-height: clamp(160px, 28svh, 320px);
   height: 100%;
   padding: 0 8px 12px;
@@ -681,9 +691,11 @@ h1 {
 }
 
 .control-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: clamp(10px, 4vw, 30px);
+  flex-shrink: 0;
 }
 
 .attack-btn {
@@ -1454,7 +1466,7 @@ body.paused .battle-screen .boss {
   }
 
   .player-card {
-    grid-template-rows: auto minmax(112px, 1fr) auto;
+    grid-template-rows: auto 1fr;
   }
 
   .boss-card {
@@ -1489,9 +1501,11 @@ body.paused .battle-screen .boss {
   }
 
   .control-row {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 6px;
     padding: 5px;
+    margin-bottom: 12px;
   }
 
   .action-btn {
@@ -1638,7 +1652,17 @@ body.paused .battle-screen .boss {
   }
 
   .control-row {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    margin-bottom: 8px;
+  }
+
+  .action-btn {
+    min-height: 28px;
+    padding: 3px 6px;
+    font-size: 0.4rem;
   }
 
   .control-row,
