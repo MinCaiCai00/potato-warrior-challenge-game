@@ -1005,7 +1005,8 @@ h1 {
   background: transparent;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 20px;
   align-items: center;
   /* place-content: center; */
   /* gap: 14px; */
@@ -1015,6 +1016,21 @@ h1 {
 
 .modal.game-over-fullscreen .modal-actions {
   margin-top: 18px;
+}
+
+.modal.game-over-fullscreen #modal-message {
+  font-size: clamp(0.9rem, 4vw, 1.4rem);
+  background: rgba(0, 0, 0, 0.65);
+  padding: 15px 25px;
+  border-radius: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.15);
+  max-width: min(640px, 92%);
+  margin: 0 auto;
+  margin-top: 5vh;
+  margin-bottom: 10px;
+  line-height: 1.6;
+  color: #f8f1d4;
+  text-shadow: 2px 2px 0 #000;
 }
 
 .modal-card {
