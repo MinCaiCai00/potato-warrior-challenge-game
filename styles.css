@@ -529,7 +529,7 @@ h1 {
   width: min(1150px, 100%);
   margin: 0 auto;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(94px, 10vw, 122px) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: clamp(8px, 2vw, 18px);
   align-items: stretch;
   flex: 1;
@@ -777,9 +777,50 @@ h1 {
 }
 
 .attack-btn {
+  --attack-charge-percent: 0%;
   background: var(--danger);
   color: #fff;
   box-shadow: 0 5px 0 var(--danger-shadow);
+  position: relative;
+  isolation: isolate;
+}
+
+.attack-btn::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border-radius: 50%;
+  background: conic-gradient(#59d8ff var(--attack-charge-percent), rgba(130, 164, 212, 0.25) var(--attack-charge-percent));
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 120ms ease;
+}
+
+.attack-btn::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 3px solid #101010;
+  z-index: -1;
+}
+
+.attack-btn.charging::before,
+.attack-btn.charge-ready::before {
+  opacity: 1;
+}
+
+.attack-btn.charge-ready::before {
+  filter: drop-shadow(0 0 6px rgba(89, 216, 255, 0.85));
+}
+
+.attack-btn.charge-alert:not(.charging):not(.charge-ready) {
+  animation: attackChargeAlert 0.9s ease-in-out infinite;
+}
+
+.attack-btn.charge-alert:not(.charging):not(.charge-ready)::after {
+  border-color: #7fe4ff;
+  box-shadow: 0 0 0 2px rgba(127, 228, 255, 0.35), 0 0 10px rgba(127, 228, 255, 0.45);
 }
 
 .defend-btn {
@@ -1584,6 +1625,17 @@ body.paused .battle-screen .boss {
   }
 }
 
+@keyframes attackChargeAlert {
+  0%, 100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  50% {
+    transform: scale(1.06);
+    filter: brightness(1.18);
+  }
+}
+
 @media (max-width: 860px) {
   .battle-screen {
     padding-bottom: 20px;
@@ -1600,7 +1652,7 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 96px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 6px;
     min-height: 0;
   }
@@ -1736,7 +1788,7 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 78px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px;
     min-height: 0;
   }
@@ -1928,7 +1980,7 @@ body.paused .battle-screen .boss {
 
   / * ── Arena：改為橫向分割，把按鈕安排進左半 ── * /
   .arena {
-    grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px;
     min-height: 0;
     height: auto;
@@ -2051,7 +2103,7 @@ body.paused .battle-screen .boss {
   }
 
   .arena {
-    grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 3px;
   }
 

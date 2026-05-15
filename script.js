@@ -329,9 +329,6 @@ const els = {
   playerHit: document.querySelector("#player-hit"),
   bossHit: document.querySelector("#boss-hit"),
   battleLineBubble: document.querySelector("#battle-line-bubble"),
-  chargeMeter: document.querySelector("#charge-meter"),
-  chargePercentText: document.querySelector("#charge-percent-text"),
-  chargeLabel: document.querySelector("#charge-label"),
   modal: document.querySelector("#modal"),
   modalTitle: document.querySelector("#modal-title"),
   modalMessage: document.querySelector("#modal-message"),
@@ -377,7 +374,6 @@ function applyUiStrings() {
 
   els.player.setAttribute("aria-label", copy.battle.playerAria);
   els.boss.setAttribute("aria-label", copy.battle.bossAria);
-  els.chargeMeter.setAttribute("aria-label", copy.battle.chargeAria);
 
   els.stageClearKicker.textContent = copy.stageClear.kicker;
   els.nextStageBtn.textContent = copy.stageClear.next;
@@ -646,15 +642,21 @@ function playSfx(src, volume = 0.8) {
 
 function setChargeMeter(percent = 0, label = copy.battle.chargeLabelIdle) {
   const normalized = clamp(Math.round(percent), 0, 100);
-  els.chargeMeter?.style.setProperty("--charge-percent", `${normalized}%`);
+  els.attackBtn?.style.setProperty("--attack-charge-percent", `${normalized}%`);
+  const isCharging = normalized > 0 && normalized < 100;
+  els.attackBtn?.classList.toggle("charging", isCharging);
+  els.attackBtn?.classList.toggle("charge-ready", normalized >= 100);
+}
 
-  if (els.chargePercentText) {
-    els.chargePercentText.textContent = `${normalized}%`;
-  }
-
-  if (els.chargeLabel) {
-    els.chargeLabel.textContent = label;
-  }
+function updateChargeReadyHint() {
+  const canUseCharge =
+    state.screen === "battle" &&
+    !state.paused &&
+    !state.locked &&
+    state.playerTurn &&
+    state.power >= 100 &&
+    !state.chargeStart;
+  els.attackBtn?.classList.toggle("charge-alert", canUseCharge);
 }
 
 function resetChargeMeter(label = copy.battle.chargeLabelIdle) {
@@ -926,13 +928,11 @@ function updateActionAvailability() {
     els.attackBtn.disabled = !canAttack;
   }
 
-  if (els.chargeMeter) {
-    els.chargeMeter.disabled = !canAttack;
-  }
-
   if (els.defendBtn) {
     els.defendBtn.disabled = !canDefend;
   }
+
+  updateChargeReadyHint();
 }
 
 function updateBars() {
@@ -946,6 +946,7 @@ function updateBars() {
   els.powerBar.style.width = `${state.power}%`;
   els.bossHpText.textContent = `${state.bossHp} / ${boss.hp}`;
   els.bossHpBar.style.width = `${bossPercent}%`;
+  updateChargeReadyHint();
 }
 
 function flashHit(target, label, text, strong = false) {
@@ -1187,7 +1188,6 @@ function bindChargeControl(target) {
 }
 
 bindChargeControl(els.attackBtn);
-bindChargeControl(els.chargeMeter);
 
 window.addEventListener("keydown", (event) => {
   if (state.musicEnabled && state.homeReady && els.bgm?.paused) {
