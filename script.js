@@ -113,14 +113,14 @@
   }
 ];
 const bossImageByKind = {
-  sludge: "assets/pictures/procrastination_slime.png",
+  sludge: "assets/pictures/procrastination.png",
   octo: "assets/pictures/lack_of _motivation.png",
   clock: "assets/pictures/deadline.png",
   mountain: "assets/pictures/work_ pressure.png",
   dragon: "assets/pictures/exhaustion.png",
   cloud: "assets/pictures/pessimism.png",
   lightning: "assets/pictures/anxiety.png",
-  mirror: "assets/pictures/self_doubt_2.jpg"
+  mirror: "assets/pictures/self_doubt_2.png"
 };
 
 const attackEffectImageByFx = {
@@ -154,6 +154,8 @@ const gameOverPopupDelayMs = 520;
 const playerToBossBufferMs = 1300;
 const bossToPlayerBufferMs = 900;
 const normalAttackPowerCost = 28;
+const defendBaseDurationMs = 1500;
+const defendExtendTickMs = 120;
 
 const musicTracks = {
   home: { src: "assets/bgm/flowerbed_fields.ogg", loop: true },
@@ -207,6 +209,9 @@ const copy = {
     chargeLabelCharging: "蓄力中",
     chargeLabelFull: "蓄力完成",
     chargeLabelDefend: "防禦中",
+    turnPlayer: "目前回合：玩家",
+    turnBoss: "目前回合：魔王",
+    turnPaused: "目前回合：暫停中",
     playerAria: "玩家角色",
     bossAria: "Boss 角色",
     stageFormat: (n) => `第 ${n} 關`,
@@ -264,7 +269,9 @@ const state = {
   defending: false,
   paused: false,
   locked: false,
+  defendHoldActive: false,
   chargeStart: 0,
+  defendTimer: null,
   chargeTimer: null,
   bossTimer: null,
   battleLineTimer: null,
@@ -312,6 +319,7 @@ const els = {
   homeBtn: document.querySelector("#home-btn"),
   stageLabel: document.querySelector("#stage-label"),
   bossTitle: document.querySelector("#boss-title"),
+  turnIndicator: document.querySelector("#turn-indicator"),
   badgeRow: document.querySelector("#badge-row"),
   playerHpLabel: document.querySelector("#player-hp-label"),
   playerHpText: document.querySelector("#player-hp-text"),
@@ -376,6 +384,9 @@ function applyUiStrings() {
   els.defendBtn.setAttribute("aria-label", copy.battle.defend);
   els.attackBtn.title = copy.battle.attack;
   els.defendBtn.title = copy.battle.defend;
+  if (els.turnIndicator) {
+    els.turnIndicator.textContent = copy.battle.turnPlayer;
+  }
 
   els.player.setAttribute("aria-label", copy.battle.playerAria);
   els.boss.setAttribute("aria-label", copy.battle.bossAria);
@@ -450,8 +461,8 @@ function centerPoint(element, referenceRect, xRatio = 0.5, yRatio = 0.5) {
 function launchAttackEffect({ from, to, type, strong = false, charged = false, image, onImpact }) {
   const layer = ensureEffectLayer();
   const layerRect = layer.getBoundingClientRect();
-  const start = centerPoint(from, layerRect, 0.5, 0.45);
-  const end = centerPoint(to, layerRect, 0.5, 0.48);
+  const start = centerPoint(from, layerRect, 0.5, 0.64);
+  const end = centerPoint(to, layerRect, 0.5, 0.66);
   const effect = document.createElement("span");
 
   effect.className = `attack-effect ${type}${image ? " has-art" : ""}${strong ? " strong" : ""}${charged ? " charged" : ""}`;
@@ -663,6 +674,26 @@ function updateChargeReadyHint() {
   els.attackBtn?.classList.toggle("power-full-hint", powerFull);
 }
 
+function updateTurnIndicator() {
+  if (!els.turnIndicator) return;
+
+  if (state.screen !== "battle") {
+    els.turnIndicator.textContent = "";
+    els.turnIndicator.classList.remove("player-turn", "boss-turn", "paused-turn");
+    return;
+  }
+
+  let message = state.playerTurn ? copy.battle.turnPlayer : copy.battle.turnBoss;
+  if (state.paused) {
+    message = copy.battle.turnPaused;
+  }
+
+  els.turnIndicator.textContent = message;
+  els.turnIndicator.classList.toggle("player-turn", !state.paused && state.playerTurn);
+  els.turnIndicator.classList.toggle("boss-turn", !state.paused && !state.playerTurn);
+  els.turnIndicator.classList.toggle("paused-turn", state.paused);
+}
+
 function resetChargeMeter(label = copy.battle.chargeLabelIdle) {
   setChargeMeter(0, label);
 }
@@ -702,9 +733,13 @@ function loadStage() {
   clearTimers();
   state.bossHp = boss.hp;
   state.defending = false;
+  state.defendHoldActive = false;
   state.locked = false;
   state.playerTurn = true;
   state.chargeStart = 0;
+  window.clearTimeout(state.defendTimer);
+  state.defendTimer = null;
+  els.player.classList.remove("guard");
   els.battleScreen.style.setProperty("--stage-bg-image", `url("${stageBackground}")`);
   els.battleScreen.style.setProperty("--stage-bg-y", state.stage === 0 ? "58%" : "50%");
 
@@ -744,6 +779,7 @@ function clearTimers() {
   window.clearTimeout(state.battleLineHideTimer);
   window.clearInterval(state.powerTimer);
   window.clearInterval(state.chargeTimer);
+  window.clearTimeout(state.defendTimer);
 
   state.bossTimer = null;
   state.turnBufferTimer = null;
@@ -751,6 +787,8 @@ function clearTimers() {
   state.battleLineHideTimer = null;
   state.powerTimer = null;
   state.chargeTimer = null;
+  state.defendTimer = null;
+  state.defendHoldActive = false;
 }
 
 function clearTransitionTimers() {
@@ -806,8 +844,7 @@ function bossAttack() {
       flashHit(els.player, els.playerHit, isSpecial ? copy.battle.hitCrit(damage) : copy.battle.hitDamage(damage), isSpecial)
   });
 
-  state.defending = false;
-  els.player.classList.remove("guard");
+  stopDefend();
   updateBars();
   updateActionAvailability(); // defend remains available while waiting for player's next turn
 
@@ -838,9 +875,8 @@ function attack(multiplier = 1) {
 
   state.bossHp = clamp(state.bossHp - damage, 0, currentBoss().hp);
   state.power = isCharged ? 0 : clamp(state.power - normalAttackPowerCost, 0, 100);
-  state.defending = false;
+  stopDefend();
   state.playerTurn = false;
-  els.player.classList.remove("guard");
 
   launchAttackEffect({
     from: els.player,
@@ -904,23 +940,41 @@ function releaseCharge(triggerNormalAttack = false) {
   attack(isCharged && state.power >= 100 ? 2.8 : 1);
 }
 
-function defend() {
-  if (state.paused || state.locked) return;
+function scheduleDefendEnd(delayMs) {
+  window.clearTimeout(state.defendTimer);
+  state.defendTimer = window.setTimeout(() => {
+    if (state.defendHoldActive) {
+      scheduleDefendEnd(defendExtendTickMs);
+      return;
+    }
+    stopDefend();
+  }, delayMs);
+}
 
+function startDefend() {
+  if (state.paused || state.locked || state.screen !== "battle") return;
+
+  state.defendHoldActive = true;
   state.defending = true;
   els.player.classList.add("guard");
   state.chargeStart = 0;
   window.clearInterval(state.chargeTimer);
   state.chargeTimer = null;
   setChargeMeter(0, copy.battle.chargeLabelDefend);
+  scheduleDefendEnd(defendBaseDurationMs);
+}
 
-  window.setTimeout(() => {
-    if (!state.defending) return;
+function releaseDefend() {
+  state.defendHoldActive = false;
+}
 
-    state.defending = false;
-    els.player.classList.remove("guard");
-    resetChargeMeter();
-  }, 1500);
+function stopDefend() {
+  state.defending = false;
+  state.defendHoldActive = false;
+  window.clearTimeout(state.defendTimer);
+  state.defendTimer = null;
+  els.player.classList.remove("guard");
+  resetChargeMeter();
 }
 
 function updateActionAvailability() {
@@ -937,6 +991,7 @@ function updateActionAvailability() {
   }
 
   updateChargeReadyHint();
+  updateTurnIndicator();
 }
 
 function updateBars() {
@@ -1090,6 +1145,7 @@ function goHome() {
   state.locked = false;
   state.playerTurn = true;
   state.chargeStart = 0;
+  stopDefend();
   els.pauseBtn.textContent = copy.battle.icons.pause;
   document.body.classList.remove("paused");
   hideStageClearScreen();
@@ -1107,6 +1163,7 @@ function closeGameScreen() {
   state.paused = false;
   state.locked = true;
   state.playerTurn = false;
+  stopDefend();
   document.body.classList.remove("paused");
 
   if (els.gameShell) {
@@ -1174,7 +1231,6 @@ els.closeGameBtn?.addEventListener("click", closeGameScreen);
 els.musicBtn.addEventListener("click", toggleMusic);
 els.homeBtn.addEventListener("click", goHome);
 els.pauseBtn.addEventListener("click", togglePause);
-els.defendBtn.addEventListener("click", defend);
 els.nextStageBtn.addEventListener("click", nextStage);
 els.victoryRestartBtn.addEventListener("click", startGame);
 els.victoryHomeBtn.addEventListener("click", goHome);
@@ -1192,6 +1248,25 @@ function bindChargeControl(target) {
 }
 
 bindChargeControl(els.attackBtn);
+
+function bindDefendControl(target) {
+  if (!target) return;
+
+  target.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+    startDefend();
+  });
+  target.addEventListener("pointerup", releaseDefend);
+  target.addEventListener("pointerleave", releaseDefend);
+  target.addEventListener("pointercancel", releaseDefend);
+  target.addEventListener("click", (event) => {
+    if (event.detail !== 0) return;
+    startDefend();
+    releaseDefend();
+  });
+}
+
+bindDefendControl(els.defendBtn);
 
 window.addEventListener("keydown", (event) => {
   if (state.musicEnabled && state.homeReady && els.bgm?.paused) {

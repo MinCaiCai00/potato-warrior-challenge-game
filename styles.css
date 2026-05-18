@@ -243,6 +243,7 @@ p {
 h1,
 h2,
 .stage-label,
+.turn-indicator,
 .stat-line,
 strong,
 .action-btn,
@@ -488,6 +489,18 @@ h1 {
   gap: 10px;
 }
 
+.stage-meta {
+  display: grid;
+  gap: 4px;
+}
+
+.stage-topline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .stage-label {
   font-size: 0.65rem;
   color: #ffe56a;
@@ -495,6 +508,32 @@ h1 {
 
 .stage-header h2 {
   font-size: clamp(1rem, 3vw, 1.8rem);
+}
+
+.turn-indicator {
+  font-size: clamp(0.5rem, 1.3vw, 0.66rem);
+  color: #e9f4ff;
+  background: rgba(10, 16, 40, 0.8);
+  border: 1px solid rgba(153, 199, 255, 0.5);
+  border-radius: 999px;
+  padding: 3px 8px;
+  width: fit-content;
+  line-height: 1;
+}
+
+.turn-indicator.player-turn {
+  color: #d6ffbc;
+  border-color: rgba(157, 225, 120, 0.66);
+}
+
+.turn-indicator.boss-turn {
+  color: #ffd7bd;
+  border-color: rgba(255, 144, 108, 0.75);
+}
+
+.turn-indicator.paused-turn {
+  color: #ffe9a8;
+  border-color: rgba(255, 214, 122, 0.7);
 }
 
 .badge-row {
@@ -764,6 +803,7 @@ h1 {
 .control-row {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: clamp(10px, 2vw, 16px);
   margin-bottom: clamp(2px, 0.8vw, 6px);
   flex-shrink: 0;
@@ -846,7 +886,7 @@ h1 {
   background-position: center;
   background-repeat: no-repeat;
   background-size: 68%;
-  border: 3px solid #28415f;
+  border: 3px solid #4a9a3f;
   color: transparent;
   font-size: 0;
   text-shadow: none;
@@ -857,7 +897,7 @@ h1 {
   line-height: 1.5;
   color: #f8f1d4;
   text-shadow: 1px 1px 0 #000;
-  padding: 4px 2px;
+  padding: 2x 2px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 2px;
 }
@@ -1819,6 +1859,10 @@ body.paused .battle-screen .boss {
     gap: 8px;
   }
 
+  .stage-topline {
+    gap: 6px;
+  }
+
   .arena {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
     gap: 4px;
@@ -1953,6 +1997,72 @@ body.paused .battle-screen .boss {
   .modal.game-over-fullscreen .modal-actions .image-btn[data-btn-action="home"] {
     --ib-max: 200px;
     --ib-vw: 82vw;
+  }
+}
+
+@media (max-height: 520px) and (orientation: landscape) {
+  .stage-header {
+    align-items: center;
+  }
+
+  .stage-topline {
+    gap: 8px;
+  }
+
+  .stage-label {
+    font-size: 0.46rem;
+    line-height: 1;
+  }
+
+  .turn-indicator {
+    font-size: 0.42rem;
+    padding: 2px 6px;
+  }
+
+  .arena {
+    align-items: stretch;
+  }
+
+  .fighter {
+    gap: 4px;
+    min-height: 0;
+  }
+
+  .player-card,
+  .boss-card {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .player-body {
+    min-height: 0;
+    align-items: flex-end;
+  }
+
+  .control-row {
+    align-self: flex-end;
+    margin-bottom: 8px;
+    margin-right: -8px;
+    transform: translateX(12px);
+  }
+
+  .boss-card .battle-line-bubble {
+    display: none;
+  }
+
+  .boss-desc {
+    font-size: 0.4rem;
+    line-height: 1.35;
+    padding: 4px 6px;
+  }
+
+  .character-wrap {
+    min-height: 0;
+    height: 100%;
+    padding-bottom: 4px;
+  }
+
+  .sprite {
+    max-width: min(100%, clamp(74px, 19vh, 144px));
   }
 }
 
@@ -2106,11 +2216,18 @@ body.paused .battle-screen .boss {
   }
 
   .action-btn {
+    width: clamp(40px, 6.2vh, 50px);
+    aspect-ratio: 1 / 1;
     min-height: 28px;
     padding: 4px 4px;
     font-size: 0.42rem;
     line-height: 1.1;
     box-shadow: 0 3px 0 var(--danger-shadow);
+  }
+
+  .attack-btn,
+  .defend-btn {
+    background-size: 34px;
   }
 
   .defend-btn {
