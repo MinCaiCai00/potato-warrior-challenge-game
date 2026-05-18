@@ -1177,7 +1177,7 @@ body.is-fullscreen-active .top-actions,
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: 3; /* 確保在角色 z:2 之上，但在看板 z:4 之下 */
+  z-index: 2; /* 遮罩只蓋背景角色，不蓋獎勵看板 */
   background: rgba(0, 0, 0, 0.82); /* 加深遮罩顏色，營造聚焦感 */
   pointer-events: none;
   opacity: 0;
@@ -1285,6 +1285,7 @@ body.is-fullscreen-active .top-actions,
 }
 
 .reward-board {
+  position: relative;
   border: 4px solid #101010;
   background: #f4e6c2;
   color: #2f2300;
@@ -1295,7 +1296,7 @@ body.is-fullscreen-active .top-actions,
   border-radius: 4px;
   opacity: 0;
   /* 初始隱藏 */
-  z-index: 4; /* 位於遮罩之上 */
+  z-index: 6; /* 固定在遮罩之上 */
 }
 
 #victory-reward-line {
