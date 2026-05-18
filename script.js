@@ -153,6 +153,7 @@ const stageClearPopupDelayMs = 320;
 const gameOverPopupDelayMs = 520;
 const playerToBossBufferMs = 1300;
 const bossToPlayerBufferMs = 900;
+const normalAttackPowerCost = 28;
 
 const musicTracks = {
   home: { src: "assets/bgm/flowerbed_fields.ogg", loop: true },
@@ -653,14 +654,13 @@ function setChargeMeter(percent = 0, label = copy.battle.chargeLabelIdle) {
 }
 
 function updateChargeReadyHint() {
+  const powerFull = state.screen === "battle" && !state.locked && state.power >= 100 && !state.chargeStart;
   const canUseCharge =
-    state.screen === "battle" &&
+    powerFull &&
     !state.paused &&
-    !state.locked &&
-    state.playerTurn &&
-    state.power >= 100 &&
-    !state.chargeStart;
+    state.playerTurn;
   els.attackBtn?.classList.toggle("charge-alert", canUseCharge);
+  els.attackBtn?.classList.toggle("power-full-hint", powerFull);
 }
 
 function resetChargeMeter(label = copy.battle.chargeLabelIdle) {
@@ -837,7 +837,7 @@ function attack(multiplier = 1) {
   playSfx(isCharged ? sfxTracks.playerChargeAttack : sfxTracks.playerAttack, isCharged ? 0.92 : 0.84);
 
   state.bossHp = clamp(state.bossHp - damage, 0, currentBoss().hp);
-  state.power = 0;
+  state.power = isCharged ? 0 : clamp(state.power - normalAttackPowerCost, 0, 100);
   state.defending = false;
   state.playerTurn = false;
   els.player.classList.remove("guard");
