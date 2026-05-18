@@ -2030,8 +2030,19 @@ body.paused .battle-screen .boss {
 }
 
 @media (max-height: 520px) and (orientation: landscape) {
+  .battle-screen {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .top-actions {
+    right: 14px;
+  }
+
   .stage-header {
     align-items: center;
+    width: min(1150px, calc(100% - 16px));
+    margin-inline: auto;
   }
 
   .stage-topline {
@@ -2050,11 +2061,14 @@ body.paused .battle-screen .boss {
 
   .arena {
     align-items: stretch;
+    width: min(1150px, calc(100% - 16px));
+    margin-inline: auto;
   }
 
   .fighter {
     gap: 4px;
     min-height: 0;
+    padding-inline: 4px;
   }
 
   .player-card,
