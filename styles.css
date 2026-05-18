@@ -472,8 +472,8 @@ body.is-fullscreen-active .battle-screen,
 body.is-fullscreen-active .top-actions,
 .game-shell:fullscreen .top-actions,
 .game-shell:-webkit-full-screen .top-actions {
-  top: max(10px, env(safe-area-inset-top));
-  right: max(12px, env(safe-area-inset-right));
+  top: max(12px, calc(env(safe-area-inset-top) + 6px));
+  right: max(30px, calc(env(safe-area-inset-right) + 24px));
 }
 
 .battle-screen.screen-shake {
@@ -486,8 +486,8 @@ body.is-fullscreen-active .top-actions,
 
 .top-actions {
   position: absolute;
-  top: 10px;
-  right: 12px;
+  top: max(12px, calc(env(safe-area-inset-top) + 6px));
+  right: max(30px, calc(env(safe-area-inset-right) + 24px));
   z-index: 10;
   display: flex;
   gap: 6px;
@@ -633,7 +633,7 @@ body.is-fullscreen-active .top-actions,
 .boss-card {
   position: relative;
   background: transparent;
-  grid-template-rows: auto auto minmax(160px, 1fr);
+  grid-template-rows: auto minmax(160px, 1fr);
 }
 
 .stat-block,
@@ -753,8 +753,11 @@ body.is-fullscreen-active .top-actions,
 }
 
 .boss-card .character-wrap {
+  grid-row: 2;
   justify-content: center;
   padding-right: 8px;
+  align-self: stretch;
+  min-height: 0;
 }
 
 .boss-card .boss {
@@ -806,8 +809,15 @@ body.is-fullscreen-active .top-actions,
   transition: filter 0.3s ease;
 }
 
+@media (min-width: 861px) {
+  .boss-card .boss {
+    --idle-base-y: 14px;
+  }
+}
+
 .battle-screen .player,
 .battle-screen .boss {
+  --idle-base-y: 0px;
   transform-origin: center bottom;
   animation: idleSway 2.8s ease-in-out infinite;
 }
@@ -1615,19 +1625,19 @@ body.paused .battle-screen .boss {
 
   0%,
   100% {
-    transform: translateX(0) translateY(0) rotate(0deg);
+    transform: translateX(0) translateY(calc(var(--idle-base-y) + 0px)) rotate(0deg);
   }
 
   25% {
-    transform: translateX(-2px) translateY(-3px) rotate(-0.6deg);
+    transform: translateX(-2px) translateY(calc(var(--idle-base-y) - 3px)) rotate(-0.6deg);
   }
 
   50% {
-    transform: translateX(2px) translateY(-6px) rotate(0.8deg);
+    transform: translateX(2px) translateY(calc(var(--idle-base-y) - 6px)) rotate(0.8deg);
   }
 
   75% {
-    transform: translateX(-1px) translateY(-2px) rotate(-0.4deg);
+    transform: translateX(-1px) translateY(calc(var(--idle-base-y) - 2px)) rotate(-0.4deg);
   }
 }
 
@@ -1812,7 +1822,7 @@ body.paused .battle-screen .boss {
   }
 
   .boss-card {
-    grid-template-rows: auto auto minmax(112px, 1fr);
+    grid-template-rows: auto minmax(112px, 1fr);
   }
 
   .sprite {
@@ -1919,6 +1929,11 @@ body.paused .battle-screen .boss {
   .battle-screen {
     padding-top: 56px;
     padding-bottom: 24px;
+  }
+
+  .top-actions {
+    top: max(12px, calc(env(safe-area-inset-top) + 8px));
+    right: max(34px, calc(env(safe-area-inset-right) + 26px));
   }
 
   .icon-btn {
@@ -2079,7 +2094,8 @@ body.paused .battle-screen .boss {
   }
 
   .top-actions {
-    right: 14px;
+    top: max(8px, calc(env(safe-area-inset-top) + 6px));
+    right: max(32px, calc(env(safe-area-inset-right) + 26px));
   }
 
   .stage-header {
