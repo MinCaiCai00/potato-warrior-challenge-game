@@ -618,6 +618,16 @@ h1 {
   padding: 6px 10px 2px;
 }
 
+.player-card .stat-block,
+.boss-card .stat-block {
+  width: 75%;
+  max-width: 100%;
+}
+
+.boss-card .stat-block {
+  margin-left: auto;
+}
+
 .stat-row {
   display: flex;
   align-items: center;
@@ -705,6 +715,24 @@ h1 {
   height: 100%;
   padding: 0 8px 10px;
   overflow: hidden;
+}
+
+.player-card .character-wrap {
+  justify-content: flex-start;
+  padding-left: clamp(10px, 2.2vw, 26px);
+}
+
+.boss-card .character-wrap {
+  justify-content: center;
+  padding-right: 8px;
+}
+
+.boss-card .boss {
+  margin-left: 12.5%;
+}
+
+.player-card .control-row {
+  gap: clamp(6px, 1.1vw, 10px);
 }
 
 .character-wrap::after {
@@ -878,6 +906,7 @@ h1 {
   white-space: nowrap;
   pointer-events: none;
   animation: fullPowerHintBlink 1s ease-in-out infinite;
+  z-index: 9;
 }
 
 .defend-btn {
@@ -1779,7 +1808,7 @@ body.paused .battle-screen .boss {
   }
 
   .action-btn {
-    width: clamp(46px, 9vw, 62px);
+    width: clamp(34px, 7.2vw, 48px);
     min-height: 0;
     padding: 0;
     font-size: 0.58rem;
@@ -1940,7 +1969,7 @@ body.paused .battle-screen .boss {
   }
 
   .action-btn {
-    width: clamp(40px, 11vw, 52px);
+    width: clamp(30px, 9vw, 38px);
     min-height: 0;
     padding: 0;
     font-size: 0.4rem;
@@ -2042,7 +2071,6 @@ body.paused .battle-screen .boss {
     align-self: flex-end;
     margin-bottom: 8px;
     margin-right: -8px;
-    transform: translateX(12px);
   }
 
   .boss-card .battle-line-bubble {
@@ -2216,18 +2244,18 @@ body.paused .battle-screen .boss {
   }
 
   .action-btn {
-    width: clamp(40px, 6.2vh, 50px);
+    width: clamp(30px, 5vh, 36px);
     aspect-ratio: 1 / 1;
-    min-height: 28px;
-    padding: 4px 4px;
-    font-size: 0.42rem;
+    min-height: 20px;
+    padding: 1px;
+    font-size: 0.38rem;
     line-height: 1.1;
     box-shadow: 0 3px 0 var(--danger-shadow);
   }
 
   .attack-btn,
   .defend-btn {
-    background-size: 34px;
+    background-size: 30px;
   }
 
   .defend-btn {
