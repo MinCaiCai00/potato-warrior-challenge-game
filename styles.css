@@ -599,6 +599,10 @@ h1 {
 }
 
 .control-row {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
   padding: 7px;
 }
 
@@ -771,6 +775,7 @@ h1 {
   min-height: 0;
   padding: 0;
   border-radius: 50%;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -778,9 +783,15 @@ h1 {
 
 .attack-btn {
   --attack-charge-percent: 0%;
-  background: var(--danger);
-  color: #fff;
-  box-shadow: 0 5px 0 var(--danger-shadow);
+  background-color: rgba(10, 16, 40, 0.86);
+  background-image: url("assets/pictures/attackFx/attack.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 68%;
+  border: 3px solid #94311f;
+  color: transparent;
+  font-size: 0;
+  text-shadow: none;
   position: relative;
   isolation: isolate;
 }
@@ -796,15 +807,6 @@ h1 {
   transition: opacity 120ms ease;
 }
 
-.attack-btn::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  border: 3px solid #101010;
-  z-index: -1;
-}
-
 .attack-btn.charging::before,
 .attack-btn.charge-ready::before {
   opacity: 1;
@@ -818,15 +820,16 @@ h1 {
   animation: attackChargeAlert 0.9s ease-in-out infinite;
 }
 
-.attack-btn.charge-alert:not(.charging):not(.charge-ready)::after {
-  border-color: #7fe4ff;
-  box-shadow: 0 0 0 2px rgba(127, 228, 255, 0.35), 0 0 10px rgba(127, 228, 255, 0.45);
-}
-
 .defend-btn {
-  background: var(--def);
-  color: #00273a;
-  box-shadow: 0 5px 0 var(--def-shadow);
+  background-color: rgba(10, 16, 40, 0.86);
+  background-image: url("assets/pictures/attackFx/defence.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 68%;
+  border: 3px solid #28415f;
+  color: transparent;
+  font-size: 0;
+  text-shadow: none;
 }
 
 .boss-desc {

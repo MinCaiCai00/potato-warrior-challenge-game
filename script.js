@@ -1,4 +1,4 @@
-const bosses = [
+﻿const bosses = [
   {
     name: "拖延泥沼怪",
     difficulty: "★",
@@ -120,7 +120,7 @@ const bossImageByKind = {
   dragon: "assets/pictures/exhaustion.png",
   cloud: "assets/pictures/pessimism.png",
   lightning: "assets/pictures/anxiety.png",
-  mirror: "assets/pictures/self_doubt_1.png"
+  mirror: "assets/pictures/self_doubt_2.jpg"
 };
 
 const attackEffectImageByFx = {
@@ -369,8 +369,12 @@ function applyUiStrings() {
   els.playerHpLabel.textContent = copy.battle.playerHpLabel;
   els.powerLabel.textContent = copy.battle.powerLabel;
 
-  els.attackBtn.textContent = copy.battle.attack;
-  els.defendBtn.textContent = copy.battle.defend;
+  els.attackBtn.textContent = "";
+  els.defendBtn.textContent = "";
+  els.attackBtn.setAttribute("aria-label", copy.battle.attack);
+  els.defendBtn.setAttribute("aria-label", copy.battle.defend);
+  els.attackBtn.title = copy.battle.attack;
+  els.defendBtn.title = copy.battle.defend;
 
   els.player.setAttribute("aria-label", copy.battle.playerAria);
   els.boss.setAttribute("aria-label", copy.battle.bossAria);
