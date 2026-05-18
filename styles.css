@@ -602,6 +602,7 @@ h1 {
 }
 
 .boss-card {
+  position: relative;
   background: transparent;
   grid-template-rows: auto auto minmax(160px, 1fr);
 }
@@ -891,10 +892,12 @@ h1 {
 
 .attack-btn.power-full-hint::after {
   content: "力氣已滿，長按可蓄力";
+  display: block;
   position: absolute;
-  left: 50%;
+  left: 0;
+  right: auto;
   bottom: calc(100% + 6px);
-  transform: translateX(-50%);
+  transform: none;
   padding: 2px 6px;
   border-radius: 6px;
   border: 1px solid rgba(250, 222, 139, 0.95);
@@ -906,7 +909,13 @@ h1 {
   white-space: nowrap;
   pointer-events: none;
   animation: fullPowerHintBlink 1s ease-in-out infinite;
-  z-index: 9;
+  z-index: 30;
+}
+
+@media (max-width: 500px) {
+  .attack-btn.power-full-hint::after {
+    left: -2px;
+  }
 }
 
 .defend-btn {
@@ -932,36 +941,40 @@ h1 {
 }
 
 .battle-line-bubble {
+  position: absolute;
+  top: clamp(92px, 23%, 180px);
+  right: clamp(6px, 4%, 20px);
   display: block;
   visibility: hidden;
-  width: 70%;
-  max-width: 220px;
-  min-height: 48px;
+  width: fit-content;
+  max-width: min(48%, 240px);
+  min-height: 0;
   border: 3px solid #101010;
   border-radius: 14px;
   background: rgba(16, 24, 46, 0.92);
   color: #fff5cc;
   text-shadow: 1px 1px 0 #000;
-  margin: 2px auto 4px;
-  padding: 10px 14px;
+  margin: 0;
+  padding: 8px 10px;
   line-height: 1.55;
   font-size: clamp(0.62rem, 1.4vw, 0.85rem);
   pointer-events: none;
   opacity: 1;
   transform: none;
+  z-index: 8;
 }
 
 .battle-line-bubble::after {
   content: "";
   position: absolute;
-  left: 50%;
+  left: 20px;
   bottom: -12px;
   width: 14px;
   height: 14px;
   border-right: 3px solid #101010;
   border-bottom: 3px solid #101010;
   background: rgba(16, 24, 46, 0.92);
-  transform: translateX(-50%) rotate(45deg);
+  transform: rotate(45deg);
 }
 
 .battle-line-bubble.show {
@@ -1788,8 +1801,8 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    width: min(100%, 340px);
-    min-height: 54px;
+    max-width: min(56%, 210px);
+    min-height: 0;
     padding: 8px 10px;
     font-size: clamp(0.55rem, 1.8vw, 0.68rem);
   }
@@ -1937,8 +1950,8 @@ body.paused .battle-screen .boss {
   }
 
   .battle-line-bubble {
-    width: min(100%, 260px);
-    min-height: 48px;
+    max-width: min(58%, 180px);
+    min-height: 0;
     font-size: 0.44rem;
     padding: 6px 8px;
   }
@@ -2088,7 +2101,7 @@ body.paused .battle-screen .boss {
   }
 
   .boss-card .battle-line-bubble {
-    display: none;
+    display: block;
   }
 
   .boss-desc {
