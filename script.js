@@ -181,7 +181,8 @@ const copy = {
     loadingBarAria: "載入進度",
     loadingWithPercent: (n) => `遊戲載入中 ${n}%`,
     start: "開始冒險",
-    startAria: "開始冒險"
+    startAria: "開始冒險",
+    orientationHint: "建議使用手機橫向，並點擊開始後啟用全螢幕以獲得最佳體驗。"
   },
   battle: {
     musicTitle: "音樂",
@@ -291,6 +292,7 @@ const state = {
 const els = {
   gameShell: document.querySelector(".game-shell"),
   homeScreen: document.querySelector("#home-screen"),
+  orientationHint: document.querySelector(".orientation-hint"),
   battleScreen: document.querySelector("#battle-screen"),
   stageClearScreen: document.querySelector("#stage-clear-screen"),
   stageClearKicker: document.querySelector("#stage-clear-kicker"),
@@ -354,6 +356,9 @@ function applyUiStrings() {
   document.title = copy.documentTitle;
 
   els.loadingBar?.setAttribute("aria-label", copy.home.loadingBarAria);
+  if (els.orientationHint) {
+    els.orientationHint.textContent = copy.home.orientationHint;
+  }
   els.startBtn.textContent = copy.home.start;
   els.startBtn.setAttribute("aria-label", copy.home.startAria);
   els.closeGameBtn?.setAttribute("aria-label", "關閉遊戲");
@@ -536,6 +541,83 @@ function activeMusicTrackKey() {
   return "home";
 }
 
+function getFullscreenElement() {
+  return document.fullscreenElement || document.webkitFullscreenElement || null;
+}
+
+function isFullscreenActive() {
+  return Boolean(getFullscreenElement());
+}
+
+function syncFullscreenStateClass() {
+  const active = isFullscreenActive();
+  document.body.classList.toggle("is-fullscreen-active", active);
+}
+
+async function lockLandscapeOrientation() {
+  if (!window.screen?.orientation?.lock) return;
+  try {
+    await window.screen.orientation.lock("landscape");
+  } catch {
+    // Some browsers block orientation lock unless in fullscreen.
+  }
+}
+
+function unlockOrientation() {
+  try {
+    window.screen?.orientation?.unlock?.();
+  } catch {
+    // Ignore unsupported platforms.
+  }
+}
+
+async function requestGameFullscreen() {
+  if (isFullscreenActive()) {
+    await lockLandscapeOrientation();
+    return true;
+  }
+
+  const target = els.gameShell || document.documentElement;
+  if (!target) return false;
+
+  try {
+    if (target.requestFullscreen) {
+      await target.requestFullscreen({ navigationUI: "hide" });
+    } else if (target.webkitRequestFullscreen) {
+      target.webkitRequestFullscreen();
+    } else {
+      return false;
+    }
+    syncFullscreenStateClass();
+    await lockLandscapeOrientation();
+    return true;
+  } catch {
+    syncFullscreenStateClass();
+    return false;
+  }
+}
+
+async function exitGameFullscreen() {
+  if (!isFullscreenActive()) {
+    syncFullscreenStateClass();
+    unlockOrientation();
+    return;
+  }
+
+  try {
+    if (document.exitFullscreen) {
+      await document.exitFullscreen();
+    } else if (document.webkitExitFullscreen) {
+      document.webkitExitFullscreen();
+    }
+  } catch {
+    // Ignore exit failures.
+  } finally {
+    syncFullscreenStateClass();
+    unlockOrientation();
+  }
+}
+
 function setScreen(screen) {
   state.screen = screen;
   els.homeScreen.classList.toggle("hidden", screen !== "home");
@@ -710,6 +792,7 @@ function createBadges() {
 }
 
 function startGame() {
+  void requestGameFullscreen();
   window.clearInterval(state.homeTimer);
   state.stage = 0;
   state.playerHp = maxPlayerHp;
@@ -1138,6 +1221,7 @@ function togglePause() {
 }
 
 function goHome() {
+  void exitGameFullscreen();
   clearTimers();
   clearTransitionTimers();
   stopMusic();
@@ -1155,6 +1239,7 @@ function goHome() {
 }
 
 function closeGameScreen() {
+  void exitGameFullscreen();
   clearTimers();
   clearTransitionTimers();
   stopMusic();
@@ -1287,6 +1372,23 @@ window.addEventListener("pointerdown", () => {
   if (state.musicEnabled && state.homeReady && els.bgm?.paused) {
     startMusic(activeMusicTrackKey());
   }
+
+  if (state.screen === "battle" && !isFullscreenActive()) {
+    void requestGameFullscreen();
+  }
+});
+
+document.addEventListener("fullscreenchange", () => {
+  syncFullscreenStateClass();
+  if (isFullscreenActive()) {
+    void lockLandscapeOrientation();
+  } else {
+    unlockOrientation();
+  }
+});
+
+document.addEventListener("webkitfullscreenchange", () => {
+  syncFullscreenStateClass();
 });
 
 applyUiStrings();

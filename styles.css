@@ -25,6 +25,8 @@ html,
 body {
   margin: 0;
   min-height: 100%;
+  width: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -51,12 +53,21 @@ button {
   width: 100vw;
   height: 100vh;
   height: 100svh;
+  height: 100dvh;
   position: relative;
   background-color: #080810;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+.game-shell:fullscreen,
+.game-shell:-webkit-full-screen {
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  height: 100dvh;
 }
 
 .home-screen,
@@ -445,6 +456,24 @@ h1 {
   background-repeat: repeat, no-repeat, no-repeat;
   background-size: auto, 100% 100%, cover;
   background-color: #060f2a;
+}
+
+body.is-fullscreen-active .battle-screen,
+.game-shell:fullscreen .battle-screen,
+.game-shell:-webkit-full-screen .battle-screen {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body.is-fullscreen-active .top-actions,
+.game-shell:fullscreen .top-actions,
+.game-shell:-webkit-full-screen .top-actions {
+  top: max(10px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
 }
 
 .battle-screen.screen-shake {
